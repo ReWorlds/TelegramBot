@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
 
 @Component
 public class UpdateController {
@@ -16,19 +15,8 @@ public class UpdateController {
     }
 
     public void processUpdate(Update update) {
-        if (update == null) {
-            Logger.getLogger("UpdateController.processUpdate")
-                    .warning("Received update is null");
-            return;
-        }
-
-        if (update.getMessage() == null) {
-            Logger.getLogger("UpdateController.processUpdate")
-                    .warning("Unsupported message type is received: " + update);
-            return;
-        }
-
-        if (update.getMessage().getDate() < telegramBot.getLaunchTime()) {
+        if (update == null || update.getMessage() == null || update.getMessage().getText() == null ||
+                update.getMessage().getDate() < telegramBot.getLaunchTime()) {
             return;
         }
 
