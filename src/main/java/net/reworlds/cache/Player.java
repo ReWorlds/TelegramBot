@@ -133,7 +133,11 @@ public class Player {
             reason = object.getString("reason");
             left = object.getString("left");
             issued = DateFormatter.formatDate(new Date(object.getLong("issued")));
-            expire = DateFormatter.formatDate(new Date(object.getLong("expire")));
+            if ("permanent".equals(left)) {
+                expire = "никогда";
+            } else {
+                expire = DateFormatter.formatDate(new Date(object.getLong("expire")));
+            }
         }
     }
 
