@@ -1,5 +1,6 @@
 package net.reworlds.cache;
 
+import net.reworlds.TelegramBot;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class Cache {
             try {
                 Thread.sleep(1000 * 60);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                TelegramBot.getLogger().warn(e);
             }
         });
         t.start();

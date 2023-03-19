@@ -3,6 +3,8 @@ package net.reworlds.controller;
 import lombok.Getter;
 import net.reworlds.TelegramBot;
 import net.reworlds.cache.Cache;
+import net.reworlds.utils.DateFormatter;
+import net.reworlds.utils.MessageUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,6 +14,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.logging.Logger;
 
 @Component
@@ -38,8 +41,7 @@ public class TelegramController extends TelegramLongPollingBot {
     public void init() {
         updateController.registerBot(this);
         Cache.garbageCollector();
-        Logger.getLogger("TelegramController.launch")
-                .info("Launch Time > " + LocalDate.now() + " " + LocalTime.now());
+        TelegramBot.getLogger().info("Launch Time > " + DateFormatter.formatDate(new Date()));
     }
 
     @Override
@@ -52,8 +54,7 @@ public class TelegramController extends TelegramLongPollingBot {
             try {
                 execute(message);
             } catch (TelegramApiException e) {
-                Logger.getLogger("TelegramController.sendMessage")
-                        .warning(e.getMessage());
+                TelegramBot.getLogger().warn(e);
             }
         }
     }

@@ -1,5 +1,6 @@
 package net.reworlds.controller;
 
+import net.reworlds.TelegramBot;
 import net.reworlds.dispatcher.CommandDispatcher;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -24,10 +25,10 @@ public class UpdateController {
         String command = text[0].split("@")[0];
         CommandDispatcher dispatcher = new CommandDispatcher(new CommandController(new ServiceCommands(telegramBot, update, text)));
         try {
-
+            TelegramBot.getLogger().info(update.getMessage().getFrom().getUserName() + " " + update.getMessage().getText());
             dispatcher.executeCommand(command);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            TelegramBot.getLogger().warn(e);
         }
     }
 }

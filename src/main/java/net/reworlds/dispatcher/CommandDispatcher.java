@@ -1,5 +1,6 @@
 package net.reworlds.dispatcher;
 
+import net.reworlds.TelegramBot;
 import net.reworlds.controller.Command;
 import org.springframework.util.ReflectionUtils;
 
@@ -35,7 +36,6 @@ public class CommandDispatcher {
     public void executeCommand(String command) throws InvocationTargetException, IllegalAccessException {
         Method method = methodHashMap.getOrDefault(command, defaultMethod);
         if (method != null) {
-            Logger.getAnonymousLogger().info(method.getName());
             method.invoke(controller);
         }
     }

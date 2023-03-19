@@ -2,6 +2,7 @@ package net.reworlds.cache;
 
 import lombok.Getter;
 import lombok.ToString;
+import net.reworlds.TelegramBot;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
 import org.json.JSONObject;
@@ -38,7 +39,7 @@ public class Metrics {
             json.getJSONArray("tps").forEach(tps -> this.tps.add(tps.toString().replaceAll("\\.\\d+", "")));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            TelegramBot.getLogger().warn(e);
         }
     }
 }
