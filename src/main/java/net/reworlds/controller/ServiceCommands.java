@@ -154,14 +154,14 @@ public class ServiceCommands implements Service {
                     banMessage[0] += "\n ├ Модератор: " + ban.getModerator() +
                             "\n ├ Причина: " + ban.getReason() +
                             "\n ├ Выдан: " + ban.getIssued() +
-                            "\n └ Истечет: через " + ban.getLeft();
+                            "\n └ Истечет: " + ban.getExpire();
                     message = banMessage[0] + banMessage[1];
                     break;
                 }
                 banMessage[0] += "\n ├ Модератор: " + ban.getModerator() +
                         "\n ├ Причина: " + ban.getReason() +
                         "\n ├ Выдан: " + ban.getIssued() +
-                        "\n ├ Истечет: через " + ban.getLeft();
+                        "\n ├ Истечет: " + ban.getExpire();
             }
         }
 
@@ -174,13 +174,13 @@ public class ServiceCommands implements Service {
                     message += "\n ├ Модератор: " + mute.getModerator() +
                             "\n ├ Причина: " + mute.getReason() +
                             "\n ├ Выдан: " + mute.getIssued() +
-                            "\n └ Истечет: через " + mute.getLeft();
+                            "\n └ Истечет: " + mute.getExpire();
                     break;
                 }
                 message += "\n ├ Модератор: " + mute.getModerator() +
                         "\n ├ Причина: " + mute.getReason() +
                         "\n ├ Выдан: " + mute.getIssued() +
-                        "\n ├ Истечет: через " + mute.getLeft();
+                        "\n ├ Истечет: " + mute.getExpire();
             }
         }
         telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
