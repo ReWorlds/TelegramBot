@@ -1,6 +1,8 @@
 package net.reworlds.controller;
 
 import lombok.AllArgsConstructor;
+import net.reworlds.service.Command;
+import net.reworlds.service.Service;
 
 @AllArgsConstructor
 public class CommandController {

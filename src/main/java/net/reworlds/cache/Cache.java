@@ -1,12 +1,10 @@
 package net.reworlds.cache;
 
-import net.reworlds.TelegramBot;
-import org.springframework.stereotype.Component;
+import net.reworlds.Bot;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class Cache {
     private static boolean isRunningGB = false;
     private static Metrics metrics;
@@ -34,7 +32,7 @@ public class Cache {
         return player;
     }
 
-    public static void garbageCollector() {
+    public static void collector() {
         if (isRunningGB) {
             return;
         }
@@ -50,7 +48,7 @@ public class Cache {
             try {
                 Thread.sleep(1000 * 60);
             } catch (InterruptedException e) {
-                TelegramBot.getLogger().warn(e);
+                Bot.getLogger().warn(e);
             }
         });
         t.start();

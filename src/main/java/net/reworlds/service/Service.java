@@ -1,4 +1,4 @@
-package net.reworlds.controller;
+package net.reworlds.service;
 
 public interface Service {
     void help();

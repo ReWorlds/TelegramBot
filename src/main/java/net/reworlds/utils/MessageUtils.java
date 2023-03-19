@@ -1,19 +1,16 @@
 package net.reworlds.utils;
 
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendMessage;
 
-@Component
 public class MessageUtils {
     public static SendMessage buildMessage(Update update, String text) {
-        var message = update.getMessage();
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.enableHtml(true);
-        sendMessage.disableWebPagePreview();
-        sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
-        sendMessage.setText(text);
+        var message = update.message();
+        var sendMessage = new SendMessage(message.chat().id(), text);
+        sendMessage.parseMode(ParseMode.HTML);
+        sendMessage.disableWebPagePreview(true);
+        sendMessage.replyToMessageId(update.message().messageId());
         return sendMessage;
     }
 }

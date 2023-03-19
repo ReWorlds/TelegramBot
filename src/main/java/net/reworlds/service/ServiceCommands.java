@@ -1,33 +1,52 @@
-package net.reworlds.controller;
+package net.reworlds.service;
 
+import com.pengrad.telegrambot.Callback;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 import net.reworlds.cache.Cache;
 import net.reworlds.cache.Metrics;
 import net.reworlds.cache.Player;
 import net.reworlds.config.CommandText;
 import net.reworlds.utils.MessageUtils;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ServiceCommands implements Service {
-    private final TelegramController telegramBot;
+    private final TelegramBot bot;
     private final Update update;
     private final String[] args;
 
-    public ServiceCommands(TelegramController telegramBot, Update update, String... args) {
-        this.telegramBot = telegramBot;
+    public ServiceCommands(TelegramBot bot, Update update, String... args) {
+        this.bot = bot;
         this.update = update;
         this.args = args;
     }
 
+    private void execute(SendMessage request) {
+        bot.execute(request, new Callback<SendMessage, SendResponse>() {
+            @Override
+            public void onResponse(SendMessage request, SendResponse response) {
+
+            }
+
+            @Override
+            public void onFailure(SendMessage request, IOException e) {
+
+            }
+        });
+    }
+
     @Override
     public void help() {
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.helpMessage));
+        execute(MessageUtils.buildMessage(update, CommandText.helpMessage));
     }
 
     @Override
     public void info() {
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.infoMessage));
+        execute(MessageUtils.buildMessage(update, CommandText.infoMessage));
     }
 
     @Override
@@ -38,13 +57,13 @@ public class ServiceCommands implements Service {
         message = message.replace("$online", "" + metrics.getOnline());
         message = message.replace("$tps", metrics.getTps().toString());
 
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+        execute(MessageUtils.buildMessage(update, message));
     }
 
     @Override
     public void player() {
         if (args.length < 2) {
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.noPlayerMessage));
+            execute(MessageUtils.buildMessage(update, CommandText.noPlayerMessage));
             return;
         }
 
@@ -52,7 +71,7 @@ public class ServiceCommands implements Service {
         if (player.getName() == null) {
             String message = CommandText.unknownPlayerMessage;
             message = message.replace("$player_name", args[1]);
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+            execute(MessageUtils.buildMessage(update, message));
             return;
         }
         String message = CommandText.playerMessage;
@@ -67,13 +86,13 @@ public class ServiceCommands implements Service {
         if (player.isOnline()) {
             message = message.replace("Оффлайн", "Онлайн");
         }
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+        execute(MessageUtils.buildMessage(update, message));
     }
 
     @Override
     public void id() {
         if (args.length < 2) {
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.noIDMessage));
+            execute(MessageUtils.buildMessage(update, CommandText.noIDMessage));
             return;
         }
 
@@ -81,7 +100,7 @@ public class ServiceCommands implements Service {
         if (player.getName() == null) {
             String message = CommandText.unknownIDMessage;
             message = message.replace("$id", args[1]);
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+            execute(MessageUtils.buildMessage(update, message));
             return;
         }
         String message = CommandText.playerMessage;
@@ -96,21 +115,21 @@ public class ServiceCommands implements Service {
         if (player.isOnline()) {
             message = message.replace("Оффлайн", "Онлайн");
         }
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+        execute(MessageUtils.buildMessage(update, message));
     }
 
     @Override
     public void skin() {
         if (args.length < 2) {
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.noSkinMessage));
+            execute(MessageUtils.buildMessage(update, CommandText.noSkinMessage));
             return;
         }
 
         Player player = Cache.getPlayer(args[1], Player.Type.ALL);
         if (player.getName() == null) {
             String message = CommandText.unknownSkinMessage;
-            message = message.replace("$id", args[1]);
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+            message = message.replace("$player", args[1]);
+            execute(MessageUtils.buildMessage(update, message));
             return;
         }
         String message = CommandText.skinMessage;
@@ -119,22 +138,22 @@ public class ServiceCommands implements Service {
         message = message.replace("$id", "" + player.getId());
         message = message.replace("$discord_id", "" + player.getDiscordID());
         message = message.replace("$uuid", player.getUUID());
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+        execute(MessageUtils.buildMessage(update, message));
 
     }
 
     @Override
     public void punish() {
         if (args.length < 2) {
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.noPunishMessage));
+            execute(MessageUtils.buildMessage(update, CommandText.noPunishMessage));
             return;
         }
 
         Player player = Cache.getPlayer(args[1], Player.Type.ALL);
         if (player.getName() == null) {
             String message = CommandText.unknownPunishMessage;
-            message = message.replace("$id", args[1]);
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+            message = message.replace("$player", args[1]);
+            execute(MessageUtils.buildMessage(update, message));
             return;
         }
         String message = CommandText.punishMessage;
@@ -183,21 +202,21 @@ public class ServiceCommands implements Service {
                         "\n ├ Истечет: " + mute.getExpire();
             }
         }
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+        execute(MessageUtils.buildMessage(update, message));
     }
 
     @Override
     public void stats() {
         if (args.length < 2) {
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, CommandText.noStatsMessage));
+            execute(MessageUtils.buildMessage(update, CommandText.noStatsMessage));
             return;
         }
 
         Player player = Cache.getPlayer(args[1], Player.Type.ALL);
         if (player.getName() == null) {
             String message = CommandText.unknownStatsMessage;
-            message = message.replace("$id", args[1]);
-            telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+            message = message.replace("player", args[1]);
+            execute(MessageUtils.buildMessage(update, message));
             return;
         }
         String message = CommandText.statsMessage;
@@ -213,7 +232,7 @@ public class ServiceCommands implements Service {
         message = message.replace("$broken_blocks", "" + player.getStats().getBrokenBlocks());
         message = message.replace("$placedBlocks", "" + player.getStats().getPlacedBlocks());
         message = message.replace("$advancements", "" + player.getStats().getAdvancements());
-        telegramBot.sendMessage(MessageUtils.buildMessage(update, message));
+        execute(MessageUtils.buildMessage(update, message));
 
     }
 }

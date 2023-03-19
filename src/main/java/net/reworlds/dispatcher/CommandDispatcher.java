@@ -1,27 +1,26 @@
 package net.reworlds.dispatcher;
 
-import net.reworlds.TelegramBot;
-import net.reworlds.controller.Command;
-import org.springframework.util.ReflectionUtils;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import com.pengrad.telegrambot.model.Update;
+import net.reworlds.Bot;
+import net.reworlds.controller.CommandController;
+import net.reworlds.service.Command;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class CommandDispatcher {
-    private final Object controller;
+    private final CommandController controller;
     private final Map<String, Method> methodHashMap = new HashMap<>();
     private Method defaultMethod;
 
-    public CommandDispatcher(Object controller) {
+    public CommandDispatcher(CommandController controller) {
         Objects.requireNonNull(controller);
         this.controller = controller;
 
-        for (Method method : ReflectionUtils.getAllDeclaredMethods(controller.getClass())) {
+        for (Method method : controller.getClass().getDeclaredMethods()) {
             Command command = method.getAnnotation(Command.class);
             if (command != null) {
                 String commandId = command.value();
@@ -37,7 +36,7 @@ public class CommandDispatcher {
     public void executeCommand(String command, Update update) throws InvocationTargetException, IllegalAccessException {
         Method method = methodHashMap.getOrDefault(command, defaultMethod);
         if (method != null) {
-            TelegramBot.getLogger().info(update.getMessage().getFrom().getUserName() + " " + update.getMessage().getText());
+            Bot.getLogger().info(update.message().from().username() + " " + update.message().text());
             method.invoke(controller);
         }
     }
