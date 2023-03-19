@@ -8,10 +8,11 @@ public class DateFormatter {
     public static String formatDate(Date date) {
         String pattern = "dd.MM.yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        if (date.getYear() == 1970) {
+        String stringFormat = simpleDateFormat.format(date);
+        if (stringFormat.contains("1970")) {
             return "неизвестно";
         }
-        return simpleDateFormat.format(date);
+        return stringFormat;
     }
 
     public static String formatMillis(long millis) {
