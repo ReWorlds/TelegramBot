@@ -13,7 +13,7 @@ import java.util.Date;
 @SpringBootApplication
 public class TelegramBot {
     static{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH-mm-ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         System.setProperty("current.date", dateFormat.format(new Date()));
     }
 
