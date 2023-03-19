@@ -11,7 +11,7 @@ public class Cache {
     private static final Map<String, Player> players = new HashMap<>();
 
     public static Metrics getMetrics() {
-        if (metrics != null && metrics.getRequestTime() + 60 > System.currentTimeMillis() / 1000L) {
+        if (metrics != null && !metrics.old()) {
             return metrics;
         }
         return metrics = new Metrics();
@@ -21,7 +21,7 @@ public class Cache {
         user = user.toLowerCase();
 
         Player player = players.get(user);
-        if (player != null && player.getRequestTime() + 60 > System.currentTimeMillis() / 1000L) {
+        if (player != null && !player.old()) {
             return player;
         }
         player = new Player(user, type);
@@ -40,7 +40,7 @@ public class Cache {
 
         Thread t = new Thread(() -> {
             players.forEach((playerName, player) -> {
-                if (player.getRequestTime() + 60 < System.currentTimeMillis() / 1000L) {
+                if (player.old()) {
                     players.remove(playerName);
                 }
             });
@@ -52,5 +52,12 @@ public class Cache {
             }
         });
         t.start();
+    }
+
+    public static class Oldable {
+        int requestTime;
+        boolean old() {
+            return requestTime + 60 < System.currentTimeMillis() / 1000L;
+        }
     }
 }

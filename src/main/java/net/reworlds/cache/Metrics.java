@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @ToString
-public class Metrics {
+public class Metrics extends Cache.Oldable {
     @Getter
     private final List<String> players = new ArrayList<>();
     @Getter
@@ -21,8 +21,6 @@ public class Metrics {
     private int online = 0;
     @Getter
     private String updateTime;
-    @Getter
-    private int requestTime = 0;
 
     public Metrics() {
         JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/server");

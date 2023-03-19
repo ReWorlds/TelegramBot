@@ -13,9 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @ToString
-public class Player {
-    @Getter
-    private int requestTime = 0;
+public class Player extends Cache.Oldable {
     @Getter
     private int id;
     @Getter
