@@ -25,8 +25,8 @@ public class UpdateController {
         String command = text[0].split("@")[0];
         CommandDispatcher dispatcher = new CommandDispatcher(new CommandController(new ServiceCommands(telegramBot, update, text)));
         try {
-            TelegramBot.getLogger().info(update.getMessage().getFrom().getUserName() + " " + update.getMessage().getText());
-            dispatcher.executeCommand(command);
+
+            dispatcher.executeCommand(command, update);
         } catch (InvocationTargetException | IllegalAccessException e) {
             TelegramBot.getLogger().warn(e);
         }
