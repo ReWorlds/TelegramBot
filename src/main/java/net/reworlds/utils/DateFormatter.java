@@ -8,6 +8,9 @@ public class DateFormatter {
     public static String formatDate(Date date) {
         String pattern = "dd.MM.yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        if (date.getYear() == 1970) {
+            return "неизвестно";
+        }
         return simpleDateFormat.format(date);
     }
 
