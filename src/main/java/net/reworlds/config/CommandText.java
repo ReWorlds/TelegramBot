@@ -136,7 +136,8 @@ public class CommandText {
              
             👤 <b>Тело</b>
              ├ <a href="https://skin.reworlds.net/body/$player_name.png">Спереди</a>
-             └ <a href="https://skin.reworlds.net/back/$player_name.png">Сзади</a>
+             ├ <a href="https://skin.reworlds.net/back/$player_name.png">Сзади</a>
+             └ <a href="https://api.simplykel.ru/skin/render?name=$player_name&api=7&sendfile=true">3D Рендер</a>
              
             👤 <b>Скин</b>
              ├ <a href="https://skin.reworlds.net/raw/skin/$player_name.png">Скин</a>
