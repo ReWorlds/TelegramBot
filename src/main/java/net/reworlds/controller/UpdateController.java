@@ -29,8 +29,5 @@ public class UpdateController {
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-//        SendMessage s = MessageUtils.buildMessage(update, "1");
-//        telegramBot.sendMessage(s);
-        // Something message.
     }
 }
