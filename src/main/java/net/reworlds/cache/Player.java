@@ -1,7 +1,7 @@
 package net.reworlds.cache;
 
 import lombok.Getter;
-import lombok.ToString;
+import net.reworlds.config.CommandText;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
 import org.json.JSONArray;
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@ToString
 public class Player extends Cache.Oldable {
     @Getter
     private int id;
@@ -31,34 +30,25 @@ public class Player extends Cache.Oldable {
     @Getter
     private String playTime;
     @Getter
-    private boolean online;
+    private String online;
     @Getter
-    private final List<Ban> bans = new ArrayList<>();
+    private final List<Punishment> bans = new ArrayList<>();
     @Getter
-    private final List<Mute> mutes = new ArrayList<>();
+    private final List<Punishment> mutes = new ArrayList<>();
     @Getter
     private Statistic stats;
+    @Getter
+    private String asString;
 
-    public Player(String player, Type type) throws JSONException {
-        JSONObject json = null;
-        switch (type) {
-            case NAME -> {
-                json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
-            }
-            case ID -> {
-                json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
-            }
-            case ALL -> {
-                json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
-                if (json != null && json.has("error-code")) {
-                    json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
-                }
-            }
-        }
-
+    public Player(String player) throws JSONException {
+        JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
         if (json == null || json.has("error-code")) {
-            return;
+            json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
+            if (json == null || json.has("error-code")) {
+                return;
+            }
         }
+
         this.requestTime = (int) (System.currentTimeMillis() / 1000L);
 
         id = json.getInt("id");
@@ -71,28 +61,31 @@ public class Player extends Cache.Oldable {
         firstSeen = DateFormatter.formatDate(new Date(json.getLong("first-seen")));
         lastSeen = DateFormatter.formatDate(new Date(json.getLong("last-seen")));
         playTime = DateFormatter.formatMillis(json.getLong("play-time"));
-        online = json.getBoolean("online");
+        if (json.getBoolean("online")) {
+            online = "Онлайн";
+        } else {
+            online = "Оффлайн";
+        }
+
         stats = new Statistic(json.getJSONObject("statistic"));
 
         var array = json.getJSONArray("bans");
         for (int i = 0; i < array.length(); i++) {
-            bans.add(new Ban(array.getJSONObject(i)));
+            bans.add(new Punishment(array.getJSONObject(i)));
         }
 
         array = json.getJSONArray("mutes");
         for (int i = 0; i < array.length(); i++) {
-            mutes.add(new Mute(array.getJSONObject(i)));
+            mutes.add(new Punishment(array.getJSONObject(i)));
         }
+
+        asString = String.format(CommandText.userMessage,
+                rank, name, id, discordID, UUID, firstSeen, lastSeen, playTime, online,
+                stats.deaths, stats.kills, stats.mobKills, stats.brokenBlocks, stats.placedBlocks, stats.advancements,
+                Punishment.toString(bans), Punishment.toString(mutes));
     }
 
-    public enum Type {
-        NAME,
-        ID,
-        ALL
-    }
-
-    @ToString
-    public static class Ban {
+    public static class Punishment {
         @Getter
         private final String moderator;
         @Getter
@@ -104,7 +97,7 @@ public class Player extends Cache.Oldable {
         @Getter
         private final String expire;
 
-        public Ban(JSONObject object) {
+        Punishment(JSONObject object) {
             moderator = object.getString("moderator");
             reason = object.getString("reason");
             left = object.getString("left");
@@ -115,31 +108,31 @@ public class Player extends Cache.Oldable {
                 expire = DateFormatter.formatDate(new Date(object.getLong("expire")));
             }
         }
-    }
 
-    @ToString
-    public static class Mute {
-        @Getter
-        private final String moderator;
-        @Getter
-        private final String reason;
-        @Getter
-        private final String left;
-        @Getter
-        private final String issued;
-        @Getter
-        private final String expire;
-
-        public Mute(JSONObject object) {
-            moderator = object.getString("moderator");
-            reason = object.getString("reason");
-            left = object.getString("left");
-            issued = DateFormatter.formatDate(new Date(object.getLong("issued")));
-            if ("permanent".equals(left)) {
-                expire = "никогда";
-            } else {
-                expire = DateFormatter.formatDate(new Date(object.getLong("expire")));
+        public static String toString(List<Punishment> punishments) {
+            StringBuilder builder = new StringBuilder();
+            if (punishments.isEmpty()) {
+                builder.append("\n└ Этот игрок не наказан.");
+                return builder.toString();
             }
+            List<Punishment> list = new ArrayList<>(punishments);
+            punishments.forEach(punishment -> {
+                list.remove(punishment);
+                String s;
+                if (list.isEmpty()) {
+                    s = "\n ├ Модератор: " + punishment.getModerator() +
+                            "\n ├ Причина: " + punishment.getReason() +
+                            "\n ├ Выдан: " + punishment.getIssued() +
+                            "\n └ Истечет: " + punishment.getExpire();
+                } else {
+                    s = "\n ├ Модератор: " + punishment.getModerator() +
+                            "\n ├ Причина: " + punishment.getReason() +
+                            "\n ├ Выдан: " + punishment.getIssued() +
+                            "\n ├ Истечет: " + punishment.getExpire() + "\n";
+                }
+                builder.append(s);
+            });
+            return builder.toString();
         }
     }
 
