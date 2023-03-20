@@ -5,14 +5,15 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import lombok.Getter;
 import net.reworlds.cache.Cache;
-import net.reworlds.controller.CommandController;
 import net.reworlds.config.JSONManager;
+import net.reworlds.controller.CommandController;
 import net.reworlds.dispatcher.CommandDispatcher;
 import net.reworlds.service.ServiceCommands;
 import net.reworlds.utils.DateFormatter;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.http.HttpClient;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,6 +24,7 @@ import java.util.Date;
 public class Bot {
     private static final int launchTime = (int) (System.currentTimeMillis() / 1000L);
     private static final String token;
+
     static {
         // log4j time
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -36,6 +38,9 @@ public class Bot {
             throw new RuntimeException(e);
         }
     }
+
+    @Getter
+    private static final HttpClient client = HttpClient.newHttpClient();
 
     @Getter
     private static final Logger logger = Logger.getLogger(Bot.class);
@@ -59,15 +64,10 @@ public class Bot {
                 try {
                     dispatcher.executeCommand(command, update);
                 } catch (InvocationTargetException | IllegalAccessException e) {
-                    logger.warn(e);
+                    logger.warn(e, e);
                 }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
-
-
-
-
-
 }
