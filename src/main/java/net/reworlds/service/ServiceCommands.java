@@ -72,7 +72,7 @@ public class ServiceCommands implements Service {
             return;
         }
 
-        execute(MessageUtils.buildMessage(update, player.toString()));
+        execute(MessageUtils.buildMessage(update, player.getAsString()));
     }
 
     @Override
