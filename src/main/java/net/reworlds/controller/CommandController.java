@@ -8,6 +8,11 @@ import net.reworlds.service.Service;
 public class CommandController {
     private final Service service;
 
+    @Command("/start")
+    public void start() {
+        service.help();
+    }
+
     @Command("/help")
     public void help() {
         service.help();
@@ -23,14 +28,9 @@ public class CommandController {
         service.metrics();
     }
 
-    @Command("/player")
-    public void player() {
-        service.player();
-    }
-
-    @Command("/id")
-    public void id() {
-        service.id();
+    @Command("/user")
+    public void user() {
+        service.user();
     }
 
     @Command("/skin")
@@ -38,13 +38,9 @@ public class CommandController {
         service.skin();
     }
 
-    @Command("/punish")
-    public void punish() {
-        service.punish();
-    }
-
-    @Command("/stats")
-    public void stats() {
-        service.stats();
+    // Fun commands
+    @Command("/coin")
+    public void coin() {
+        service.coin();
     }
 }

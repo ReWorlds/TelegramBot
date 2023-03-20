@@ -7,13 +7,10 @@ public interface Service {
 
     void metrics();
 
-    void player();
-
-    void id();
+    void user();
 
     void skin();
 
-    void punish();
-
-    void stats();
+    // Fun commands
+    void coin();
 }
