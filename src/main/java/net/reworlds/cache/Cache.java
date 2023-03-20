@@ -17,14 +17,14 @@ public class Cache {
         return metrics = new Metrics();
     }
 
-    public static Player getPlayer(String user, Player.Type type) {
+    public static Player getPlayer(String user) {
         user = user.toLowerCase();
 
         Player player = players.get(user);
         if (player != null && !player.old()) {
             return player;
         }
-        player = new Player(user, type);
+        player = new Player(user);
         players.put(user, player);
         if (player.getName() != null) {
             players.put("" + player.getId(), player);
