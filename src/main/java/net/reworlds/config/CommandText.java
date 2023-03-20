@@ -4,13 +4,12 @@ public class CommandText {
     public static final String helpMessage = """
             📃 <b>RevolutionWorlds | Help</b>
              ├ Список зарегистрированных команд в этом боте:
-             ├ /help - Получение всех команд, имеющихся у бота.
-             ├ /info - Информация о том, как зайти на сервер.
+             ├ /help - Получение всех команд, имеющихся у бота
+             ├ /info - Информация о том, как зайти на сервер
              ├ /metrics - Информация о сервере (онлайн, тпс)
-             ├ /player - Информация об игроке
-             ├ /punish - Посмотреть историю банов/мутов игрока (по никнейму или ID)
+             ├ /user -Информация об игроке (по никнейму или ID)
              ├ /skin - Получение ссылок на скин, плащ и части тела игрока (по никнейму или ID)
-             └ /stats - Просмотр статистики игрока (по никнейму или ID)
+             └ /coin - Команда для развлечения
             """;
 
     public static final String infoMessage = """
@@ -27,136 +26,110 @@ public class CommandText {
 
     public static final String metricsMessage = """
             🌍 <b>RevolutionWorlds | Metrics</b>
-             ├ Информация от $update-time
-             ├ Online: $online
-             └ TPS: $tps
+             ├ Информация от %1$s
+             ├ Online: %2$d
+             └ TPS: %3$s
             """;
 
-    public static final String noPlayerMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             ├ Вы не указали никнейм игрока.
-             └ Пример: <code>/player _Vekster</code>
+    public static final String noUserMessage = """
+            🔎 <b>RevolutionWorlds | User</b>
+             ├ Вы не указали никнейм или id игрока.
+             ├ Пример: <code>/user _Vekster</code>
+             └ Пример: <code>/user 1</code>
             """;
 
-    public static final String noIDMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             ├ Вы не указали id игрока.
-             └ Пример: <code>/id 1</code>
+    public static final String unknownUserMessage = """
+            🔎 <b>RevolutionWorlds | User</b>
+             └ Игрока с никнеймом или id <code>%1$s</code> не существует.
             """;
 
-    public static final String unknownPlayerMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             └ Игрока с никнеймом <code>$player_name</code> не существует.
-            """;
-
-    public static final String unknownIDMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             └ Игрока с ID <code>$id</code> не существует.
-            """;
-
-    public static final String playerMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             ├ [$rank] $player_name
-             ├ ID: $id
-             ├ DiscordID: $discord_id
-             └ UUID: $uuid
+    public static String userMessage = """
+            🔎 <b>RevolutionWorlds | User</b>
+             ├ [%1$s] %2$s
+             ├ ID: %3$d
+             ├ DiscordID: %4$d
+             └ UUID: %5$s
                         
             📃 <b>Основная информация</b>
-             ├ Первый вход: $first_seen
-             ├ Последний вход: $last_seen
-             ├ В игре: $playtime
-             └ Статус: Оффлайн
+             ├ Первый вход: %6$s
+             ├ Последний вход: %7$s
+             ├ В игре: %8$s
+             └ Статус: %9$s
+             
+            📊 <b>Статистика</b>
+             ├ Смертей: %10$d
+             ├ Убийств: %11$d
+             ├ Мобов: %12$d
+             ├ Сломано блоков: %13$d
+             ├ Поставлено блоков %14$d
+             └ Достижений: %15$d/102
+             
+            🚫 <b>Баны</b>%16$s
+                        
+            🔇 <b>Муты</b>%17$s
                         
             👤 <b>Скин игрока</b>
-             └ <a href="https://skin.reworlds.net/raw/skin/$player_name.png">Скачать</a>
-            """;
-
-    public static final String noPunishMessage = """
-            🔎 <b>RevolutionWorlds | Punish</b>
-             ├ Вы не указали никнейм или ID игрока.
-             ├ Пример: <code>/player _Vekster</code>
-             └ Пример: <code>/id 237</code>
+             └ <a href="https://skin.reworlds.net/raw/skin/%2$s.png">Скачать</a>
             """;
 
     public static final String noSkinMessage = """
             🔎 <b>RevolutionWorlds | Skin</b>
              ├ Вы не указали никнейм или ID игрока.
-             ├ Пример: <code>/player _Vekster</code>
-             └ Пример: <code>/id 237</code>
-            """;
-
-    public static final String noStatsMessage = """
-            🔎 <b>RevolutionWorlds | Stats</b>
-             ├ Вы не указали никнейм или ID игрока.
-             ├ Пример: <code>/player _Vekster</code>
-             └ Пример: <code>/id 237</code>
-            """;
-
-    public static final String unknownPunishMessage = """
-            🔎 <b>RevolutionWorlds | Punish</b>
-             └ Игрока с никнеймом или id <code>$player</code> не существует.
+             ├ Пример: <code>/skin _Vekster</code>
+             └ Пример: <code>/skin 237</code>
             """;
 
     public static final String unknownSkinMessage = """
             🔎 <b>RevolutionWorlds | Skin</b>
-             └ Игрока с никнеймом или id <code>$player</code> не существует.
-            """;
-
-    public static final String unknownStatsMessage = """
-            🔎 <b>RevolutionWorlds | Stats</b>
-             └ Игрока с никнеймом или id <code>$player</code> не существует.
-            """;
-
-    public static final String punishMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             ├ [$rank] $player_name
-             ├ ID: $id
-             ├ DiscordID: $discord_id
-             └ UUID: $uuid
-             
-            🚫 <b>Баны</b>
-             └ Этот игрок может играть на сервере.
-             
-            🔇 <b>Муты</b>
-             └ Этот игрок может разговаривать в игровом чате.
+             └ Игрока с никнеймом или id <code>%1$s</code> не существует.
             """;
 
     public static final String skinMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             ├ [$rank] $player_name
-             ├ ID: $id
-             ├ DiscordID: $discord_id
-             └ UUID: $uuid
+            🔎 <b>RevolutionWorlds | Skin</b>
+             ├ [%1$s] %2$s
+             ├ ID: %3$d
+             ├ DiscordID: %4$d
+             └ UUID: %5$s
              
             👤 <b>Голова</b>
-             ├ <a href="https://skin.reworlds.net/head/3d/$player_name.png">3D со 2 слоем</a>
-             ├ <a href="https://skin.reworlds.net/helm/$player_name.png">2D со 2 слоем</a>
-             ├ <a href="https://skin.reworlds.net/head/3d/$player_name.png">3D</a>
-             └ <a href="https://skin.reworlds.net/head/$player_name.png">2D</a>
+             ├ <a href="https://skin.reworlds.net/head/3d/%2$s.png">3D со 2 слоем</a>
+             ├ <a href="https://skin.reworlds.net/helm/%2$s.png">2D со 2 слоем</a>
+             ├ <a href="https://skin.reworlds.net/head/3d/%2$s.png">3D</a>
+             └ <a href="https://skin.reworlds.net/head/%2$s.png">2D</a>
              
             👤 <b>Тело</b>
-             ├ <a href="https://skin.reworlds.net/body/$player_name.png">Спереди</a>
-             ├ <a href="https://skin.reworlds.net/back/$player_name.png">Сзади</a>
-             └ <a href="https://api.simplykel.ru/skin/render?name=$player_name&api=7&sendfile=true">3D Рендер</a>
+             ├ <a href="https://skin.reworlds.net/body/%2$s.png">Спереди</a>
+             ├ <a href="https://skin.reworlds.net/back/%2$s.png">Сзади</a>
+             └ <a href="https://api.simplykel.ru/skin/render?name=%2$s&api=7&sendfile=true">3D Рендер</a>
              
             👤 <b>Скин</b>
-             ├ <a href="https://skin.reworlds.net/raw/skin/$player_name.png">Скин</a>
-             └ <a href="https://skin.reworlds.net/raw/cape/$player_name.png">Плащ</a>
+             ├ <a href="https://skin.reworlds.net/raw/skin/%2$s.png">Скин</a>
+             └ <a href="https://skin.reworlds.net/raw/cape/%2$s.png">Плащ</a>
             """;
 
-    public static final String statsMessage = """
-            🔎 <b>RevolutionWorlds | Player</b>
-             ├ [$rank] $player_name
-             ├ ID: $id
-             ├ DiscordID: $discord_id
-             └ UUID: $uuid
-             
-            📊 <b>Статистика</b>
-             ├ Смертей: $deaths
-             ├ Убийств: $kills
-             ├ Мобов: $mob_kills
-             ├ Сломано блоков: $broken_blocks
-             ├ Поставлено блоков $placedBlocks
-             └ Достижений: $advancements/102
+    // Fun commands
+
+    public static final String noCoinMessage = """
+            🪙 <b>Fun | Coin</b>
+             ├ Вы не указали ставку.
+             └ Пример: <code>/coin 31</code>
             """;
+
+    public static final String noCoinChatMessage = """
+            🪙 <b>Fun | Coin</b>
+             └ Данная команда поддерживается только в чате.
+            """;
+
+    public static final String unknownCoinMessage = """
+            🪙 <b>Fun | Coin</b>
+             ├ Некорректная ставка. Ставка должна быть целым числом. (от 31 до 31622399)
+             └ Пример: <code>/coin 31</code>
+            """;
+
+    public static final String coinMessage = """
+            🪙 <b>Fun | Coin</b>
+             ├ Выпало: %1$s
+             └ %2$s
+            """;
+
 }
