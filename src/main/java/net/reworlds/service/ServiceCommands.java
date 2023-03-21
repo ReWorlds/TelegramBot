@@ -19,7 +19,7 @@ import net.reworlds.utils.MessageUtils;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ServiceCommands implements Service {
+public class ServiceCommands {
     private final TelegramBot bot;
     private final Update update;
     private final String[] args;
@@ -44,23 +44,19 @@ public class ServiceCommands implements Service {
         });
     }
 
-    @Override
     public void help() {
         execute(MessageUtils.buildMessage(update, CommandText.helpMessage));
     }
 
-    @Override
     public void info() {
         execute(MessageUtils.buildMessage(update, CommandText.infoMessage));
     }
 
-    @Override
     public void metrics() {
         Metrics metrics = Cache.getMetrics();
         execute(MessageUtils.buildMessage(update, String.format(CommandText.metricsMessage, metrics.getUpdateTime(), metrics.getOnline(), metrics.getTps())));
     }
 
-    @Override
     public void user() {
         if (args.length < 2) {
             execute(MessageUtils.buildMessage(update, CommandText.noUserMessage));
@@ -76,7 +72,6 @@ public class ServiceCommands implements Service {
         execute(MessageUtils.buildMessage(update, player.getAsString()));
     }
 
-    @Override
     public void skin() {
         if (args.length < 2) {
             execute(MessageUtils.buildMessage(update, CommandText.noSkinMessage));
@@ -93,7 +88,6 @@ public class ServiceCommands implements Service {
 
     }
 
-    @Override
     public void coin() {
         User user = update.message().from();
         Chat chat = update.message().chat();

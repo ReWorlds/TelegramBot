@@ -2,11 +2,11 @@ package net.reworlds.controller;
 
 import lombok.AllArgsConstructor;
 import net.reworlds.service.Command;
-import net.reworlds.service.Service;
+import net.reworlds.service.ServiceCommands;
 
 @AllArgsConstructor
 public class CommandController {
-    private final Service service;
+    private final ServiceCommands service;
 
     @Command("/start")
     public void start() {
