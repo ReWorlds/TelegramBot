@@ -13,6 +13,7 @@ import net.reworlds.cache.Cache;
 import net.reworlds.cache.Metrics;
 import net.reworlds.cache.Player;
 import net.reworlds.config.CommandText;
+import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.MessageUtils;
 
 import java.io.IOException;
@@ -94,39 +95,40 @@ public class ServiceCommands implements Service {
 
     @Override
     public void coin() {
-        if (args.length < 2) {
-            execute(MessageUtils.buildMessage(update, CommandText.noCoinMessage));
-            return;
-        }
+        User user = update.message().from();
+        Chat chat = update.message().chat();
+        int time = 0;
+        if (!user.id().equals(chat.id())) {
+            if (args.length < 2) {
+                execute(MessageUtils.buildMessage(update, CommandText.noCoinMessage));
+                return;
+            }
 
-        int time;
-        try {
-            time = Integer.parseInt(args[1]);
-            if (time <= 30 || time >= 31622400) {
+            try {
+                time = Integer.parseInt(args[1]);
+                if (time <= 60 || time >= 31622400) {
+                    execute(MessageUtils.buildMessage(update, CommandText.unknownCoinMessage));
+                    return;
+                }
+            } catch (NumberFormatException e) {
                 execute(MessageUtils.buildMessage(update, CommandText.unknownCoinMessage));
                 return;
             }
-        } catch (NumberFormatException e) {
-            execute(MessageUtils.buildMessage(update, CommandText.unknownCoinMessage));
-            return;
-        }
-
-        User user = update.message().from();
-        Chat chat = update.message().chat();
-
-        if (user.id().equals(chat.id())) {
-            execute(MessageUtils.buildMessage(update, CommandText.noCoinChatMessage));
-            return;
         }
 
         int random = ThreadLocalRandom.current().nextInt(2);
 
         if (random == 1) {
             execute(MessageUtils.buildMessage(update, String.format(CommandText.coinMessage,
-                    "Орел", "Вы победили!")));
+                    "Орел!", "Вы победили.")));
         } else {
+            if (user.id().equals(chat.id())) {
+                execute(MessageUtils.buildMessage(update, String.format(CommandText.coinMessage,
+                        "Решка!", "Вы проиграли.")));
+                return;
+            }
             execute(MessageUtils.buildMessage(update, String.format(CommandText.coinMessage,
-                    "Решка", "Вы проиграли и будете замучены на " + time + " секунд!")));
+                    "Решка!", "Вы проиграли и будете замучены на " + DateFormatter.formatSeconds(time))));
             RestrictChatMember restrict = new RestrictChatMember(
                     chat.id(),
                     user.id(),

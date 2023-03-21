@@ -112,18 +112,13 @@ public class CommandText {
     public static final String noCoinMessage = """
             🪙 <b>Fun | Coin</b>
              ├ Вы не указали ставку.
-             └ Пример: <code>/coin 31</code>
-            """;
-
-    public static final String noCoinChatMessage = """
-            🪙 <b>Fun | Coin</b>
-             └ Данная команда поддерживается только в чате.
+             └ Пример: <code>/coin 61</code>
             """;
 
     public static final String unknownCoinMessage = """
             🪙 <b>Fun | Coin</b>
-             ├ Некорректная ставка. Ставка должна быть целым числом. (от 31 до 31622399)
-             └ Пример: <code>/coin 31</code>
+             ├ Некорректная ставка. Ставка должна быть целым числом. (от 61 до 31622399)
+             └ Пример: <code>/coin 61</code>
             """;
 
     public static final String coinMessage = """

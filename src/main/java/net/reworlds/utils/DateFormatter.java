@@ -16,8 +16,26 @@ public class DateFormatter {
     }
 
     public static String formatMillis(long millis) {
-        Duration duration = Duration.ofMillis(millis);
-        return String.format("%d дн. %02d ч. %02d мин. %02d сек.",
-                duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+       return durationToStr(Duration.ofMillis(millis));
+    }
+
+    public static String formatSeconds(long seconds) {
+        return durationToStr(Duration.ofSeconds(seconds));
+    }
+
+    private static String durationToStr(Duration duration) {
+        if (duration.toDaysPart() != 0) {
+            return String.format("%d дн. %02d ч. %02d мин. %02d сек.",
+                    duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+        }
+        if (duration.toHoursPart() != 0) {
+            return String.format("%02d ч. %02d мин. %02d сек.",
+                    duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+        }
+        if (duration.toMinutesPart() != 0) {
+            return String.format("%02d мин. %02d сек.",
+                    duration.toMinutesPart(), duration.toSecondsPart());
+        }
+        return String.format("%02d сек.", duration.toSecondsPart());
     }
 }
