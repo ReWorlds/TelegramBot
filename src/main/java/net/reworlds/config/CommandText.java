@@ -47,7 +47,7 @@ public class CommandText {
             🔎 <b>RevolutionWorlds | User</b>
              ├ [%1$s] %2$s
              ├ ID: %3$d
-             ├ DiscordID: %4$d
+             ├ DiscordID: <a href="https://discordapp.com/users/%4$d">%4$d</a>
              └ UUID: %5$s
                         
             📃 <b>Основная информация</b>
@@ -88,7 +88,7 @@ public class CommandText {
             🔎 <b>RevolutionWorlds | Skin</b>
              ├ [%1$s] %2$s
              ├ ID: %3$d
-             ├ DiscordID: %4$d
+             ├ DiscordID: <a href="https://discordapp.com/users/%4$d">%4$d</a>
              └ UUID: %5$s
              
             👤 <b>Голова</b>
