@@ -25,17 +25,17 @@ public class DateFormatter {
 
     private static String durationToStr(Duration duration) {
         if (duration.toDaysPart() != 0) {
-            return String.format("%d дн. %02d ч. %02d мин. %02d сек.",
+            return String.format("%d дн. %d ч. %d мин. %d сек.",
                     duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
         }
         if (duration.toHoursPart() != 0) {
-            return String.format("%02d ч. %02d мин. %02d сек.",
+            return String.format("%d ч. %d мин. %d сек.",
                     duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
         }
         if (duration.toMinutesPart() != 0) {
-            return String.format("%02d мин. %02d сек.",
+            return String.format("%d мин. %d сек.",
                     duration.toMinutesPart(), duration.toSecondsPart());
         }
-        return String.format("%02d сек.", duration.toSecondsPart());
+        return String.format("%d сек.", duration.toSecondsPart());
     }
 }
