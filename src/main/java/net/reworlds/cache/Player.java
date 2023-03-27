@@ -1,6 +1,7 @@
 package net.reworlds.cache;
 
 import lombok.Getter;
+import net.reworlds.Bot;
 import net.reworlds.config.CommandText;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
@@ -8,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +41,8 @@ public class Player extends Cache.Oldable {
     private Statistic stats;
     @Getter
     private String asString;
+    @Getter
+    private String active = "";
 
     public Player(String player) throws JSONException {
         JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
@@ -67,6 +71,16 @@ public class Player extends Cache.Oldable {
             online = "Оффлайн";
         }
 
+
+        if (!DateFormatter.unknownDate.equals(lastSeen)) {
+            try {
+                active = DateFormatter.difference(lastSeen) <= 7 ? "\uD83D\uDD25" : "";
+            } catch (ParseException e) {
+                Bot.getLogger().warn(e, e);
+            }
+        }
+
+
         stats = new Statistic(json.getJSONObject("statistic"));
 
         var array = json.getJSONArray("bans");
@@ -82,7 +96,7 @@ public class Player extends Cache.Oldable {
         asString = String.format(CommandText.userMessage,
                 rank, name, id, discordID, UUID, firstSeen, lastSeen, playTime, online,
                 stats.deaths, stats.kills, stats.mobKills, stats.brokenBlocks, stats.placedBlocks, stats.advancements,
-                Punishment.toString(bans), Punishment.toString(mutes));
+                Punishment.toString(bans), Punishment.toString(mutes), active);
     }
 
     public static class Punishment {

@@ -45,7 +45,7 @@ public class CommandText {
 
     public static String userMessage = """
             🔎 <b>RevolutionWorlds | User</b>
-             ├ [%1$s] %2$s
+             ├ [%1$s] %2$s %18$s
              ├ ID: %3$d
              ├ DiscordID: <a href="https://discordapp.com/users/%4$d">%4$d</a>
              └ UUID: %5$s
