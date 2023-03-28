@@ -9,14 +9,17 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.RestrictChatMember;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import net.reworlds.Bot;
 import net.reworlds.cache.Cache;
 import net.reworlds.cache.Metrics;
 import net.reworlds.cache.Player;
 import net.reworlds.config.CommandText;
+import net.reworlds.database.ConnectionPool;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.MessageUtils;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ServiceCommands {
@@ -59,11 +62,18 @@ public class ServiceCommands {
 
     public void user() {
         if (args.length < 2) {
-            execute(MessageUtils.buildMessage(update, CommandText.noUserMessage));
+            String account = Cache.getAccountLink(update.message().from().id());
+            if ("".equals(account)) {
+                execute(MessageUtils.buildMessage(update, CommandText.noUserMessage));
+                return;
+            }
+            executeUser(Cache.getPlayer(account));
             return;
         }
+        executeUser(Cache.getPlayer(args[1]));
+    }
 
-        Player player = Cache.getPlayer(args[1]);
+    public void executeUser(Player player) {
         if (player.getName() == null) {
             execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownUserMessage, args[1])));
             return;
@@ -74,18 +84,51 @@ public class ServiceCommands {
 
     public void skin() {
         if (args.length < 2) {
-            execute(MessageUtils.buildMessage(update, CommandText.noSkinMessage));
+            String account = Cache.getAccountLink(update.message().from().id());
+            if ("".equals(account)) {
+                execute(MessageUtils.buildMessage(update, CommandText.noSkinMessage));
+                return;
+            }
+            executeSkin(Cache.getPlayer(account));
             return;
         }
+        executeSkin(Cache.getPlayer(args[1]));
+    }
 
-        Player player = Cache.getPlayer(args[1]);
+    public void executeSkin(Player player) {
         if (player.getName() == null) {
             execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownSkinMessage, args[1])));
             return;
         }
         execute(MessageUtils.buildMessage(update, String.format(CommandText.skinMessage, player.getRank(), player.getName(), player.getId(),
                 player.getDiscordID(), player.getUUID())));
+    }
 
+    public void account() {
+        User user = update.message().from();
+
+        if (args.length < 2) {
+            execute(MessageUtils.buildMessage(update, CommandText.noAccountMessage));
+            return;
+        }
+
+        Player player = Cache.getPlayer(args[1]);
+        if (player.getName() == null) {
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownAccountMessage, args[1])));
+            return;
+        }
+
+        try (var statement = ConnectionPool.getConnection().prepareStatement(ConnectionPool.setAccountString)) {
+            statement.setLong(1, user.id());
+            statement.setString(2, args[1]);
+            statement.setString(3, args[1]);
+            statement.executeUpdate();
+            Cache.setAccountLink(user.id(), args[1]);
+
+            execute(MessageUtils.buildMessage(update, CommandText.accountMessage));
+        } catch (SQLException e) {
+            Bot.getLogger().warn(e, e);
+        }
     }
 
     public void coin() {
