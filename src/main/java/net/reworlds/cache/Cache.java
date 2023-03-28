@@ -1,9 +1,7 @@
 package net.reworlds.cache;
 
 import net.reworlds.Bot;
-import net.reworlds.config.CommandText;
 import net.reworlds.database.ConnectionPool;
-import net.reworlds.utils.MessageUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +14,7 @@ public class Cache {
 
     private static final Map<Long, String> accounts = new HashMap<>();
     private static final Map<String, Player> players = new HashMap<>();
+    private static final Map<String, Release> releases = new HashMap<>();
 
     public static Metrics getMetrics() {
         if (metrics != null && !metrics.old()) {
@@ -37,6 +36,27 @@ public class Cache {
             players.put("" + player.getId(), player);
         }
         return player;
+    }
+
+    private static Release getRelease(String tag, boolean latest) {
+        Release release = releases.get(tag);
+        if (release != null && !release.old()) {
+            return release;
+        }
+        release = new Release(tag);
+        releases.put(tag, release);
+        if (latest) {
+            releases.put(release.getTag(), release);
+        }
+        return release;
+    }
+
+    public static Release getRelease(String tag) {
+        return getRelease(tag, false);
+    }
+
+    public static Release getRelease() {
+        return getRelease("latest", true);
     }
 
     public static String getAccountLink(Long id) {
@@ -91,6 +111,7 @@ public class Cache {
 
     public static class Oldable {
         int requestTime;
+
         boolean old() {
             return requestTime + 60 < System.currentTimeMillis() / 1000L;
         }

@@ -13,6 +13,7 @@ import net.reworlds.Bot;
 import net.reworlds.cache.Cache;
 import net.reworlds.cache.Metrics;
 import net.reworlds.cache.Player;
+import net.reworlds.cache.Release;
 import net.reworlds.config.CommandText;
 import net.reworlds.database.ConnectionPool;
 import net.reworlds.utils.DateFormatter;
@@ -129,6 +130,23 @@ public class ServiceCommands {
         } catch (SQLException e) {
             Bot.getLogger().warn(e, e);
         }
+    }
+
+    public void release() {
+        if (args.length < 2) {
+            executeRelease(Cache.getRelease());
+            return;
+        }
+        executeRelease(Cache.getRelease(args[1]));
+    }
+
+    public void executeRelease(Release release) {
+        if (release.getName() == null) {
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownReleaseMessage, args[1])));
+            return;
+        }
+
+        execute(MessageUtils.buildMessage(update, release.getAsString()));
     }
 
     public void coin() {
