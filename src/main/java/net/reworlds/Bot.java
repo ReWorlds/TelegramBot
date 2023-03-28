@@ -11,6 +11,7 @@ import net.reworlds.dispatcher.CommandDispatcher;
 import net.reworlds.service.ServiceCommands;
 import net.reworlds.utils.DateFormatter;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpClient;
@@ -23,6 +24,8 @@ import java.util.Date;
 
 public class Bot {
     private static final int launchTime = (int) (System.currentTimeMillis() / 1000L);
+    @Getter
+    private static final JSONObject json;
     private static final String token;
 
     static {
@@ -32,8 +35,10 @@ public class Bot {
 
         // bot token
         try {
-            token = JSONManager.of(System.getProperty("user.dir") + "/config/config.json")
-                    .getJsonObject().getString("bot-token");
+            json = JSONManager.of(System.getProperty("user.dir") + "/config/config.json")
+                    .getJsonObject();
+            token = json.getString("bot-token");
+            json.remove("bot-token");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
