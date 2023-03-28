@@ -11,7 +11,7 @@ public class CommandText {
              ├ /user - Информация об игроке (по никнейму или ID)
              ├ Алиасы: /player
              ├ /skin - Получение ссылок на скин, плащ и части тела игрока (по никнейму или ID)
-             ├ /account - Привязать Telegram аккаунт к никнейму.
+             ├ /account - Привязать Telegram аккаунт к никнейму
              ├ Алиасы: /link, /connect
              ├ /release - Посмотреть обновление бота по тегу
              ├ Алиасы: /version, /update
