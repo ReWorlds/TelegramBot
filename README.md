@@ -56,7 +56,7 @@ Telegram Bot для проекта RevolutionWorlds, использующий [�
 
 - /release (/version, /update)
 <div align="center">
-<img src="https://cdn.discordapp.com/attachments/1090340742452486214/1090341685130711111/image.png" width="700">
+<img src="https://cdn.discordapp.com/attachments/1090340742452486214/1090349820159471626/image.png" width="700">
 </div>
 
 - /coin
