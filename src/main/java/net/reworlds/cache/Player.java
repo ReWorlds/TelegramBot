@@ -6,7 +6,6 @@ import net.reworlds.config.CommandText;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -40,11 +39,11 @@ public class Player extends Cache.Oldable {
     @Getter
     private Statistic stats;
     @Getter
-    private String asString;
-    @Getter
     private String active = "";
+    @Getter
+    private String asString;
 
-    public Player(String player) throws JSONException {
+    public Player(String player) {
         JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
         if (json == null || json.has("error-code")) {
             json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
@@ -55,48 +54,53 @@ public class Player extends Cache.Oldable {
 
         this.requestTime = (int) (System.currentTimeMillis() / 1000L);
 
-        id = json.getInt("id");
-        name = json.getString("name");
-        UUID = json.getString("uuid");
-        StringBuilder sb = new StringBuilder(json.getString("rank"));
-        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-        rank = sb.toString();
-        discordID = json.getLong("discord-id");
-        firstSeen = DateFormatter.formatDate(new Date(json.getLong("first-seen")));
-        lastSeen = DateFormatter.formatDate(new Date(json.getLong("last-seen")));
-        playTime = DateFormatter.formatMillis(json.getLong("play-time"));
-        if (json.getBoolean("online")) {
-            online = "Онлайн";
-        } else {
-            online = "Оффлайн";
-        }
-
-
-        if (!DateFormatter.unknownDate.equals(lastSeen)) {
-            try {
-                active = DateFormatter.difference(lastSeen) <= 7 ? "\uD83D\uDD25" : "";
-            } catch (ParseException e) {
-                Bot.getLogger().warn(e, e);
+        try {
+            id = json.getInt("id");
+            name = json.getString("name");
+            UUID = json.getString("uuid");
+            StringBuilder sb = new StringBuilder(json.getString("rank"));
+            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+            rank = sb.toString();
+            discordID = json.getLong("discord-id");
+            firstSeen = DateFormatter.formatDate(new Date(json.getLong("first-seen")));
+            lastSeen = DateFormatter.formatDate(new Date(json.getLong("last-seen")));
+            playTime = DateFormatter.formatMillis(json.getLong("play-time"));
+            if (json.getBoolean("online")) {
+                online = "Онлайн";
+            } else {
+                online = "Оффлайн";
             }
+
+
+            if (!DateFormatter.unknownDate.equals(lastSeen)) {
+                try {
+                    active = DateFormatter.difference(lastSeen) <= 7 ? "\uD83D\uDD25" : "";
+                } catch (ParseException e) {
+                    Bot.getLogger().warn(e, e);
+                }
+            }
+
+
+            stats = new Statistic(json.getJSONObject("statistic"));
+
+            var array = json.getJSONArray("bans");
+            for (int i = 0; i < array.length(); i++) {
+                bans.add(new Punishment(array.getJSONObject(i)));
+            }
+
+            array = json.getJSONArray("mutes");
+            for (int i = 0; i < array.length(); i++) {
+                mutes.add(new Punishment(array.getJSONObject(i)));
+            }
+
+            asString = String.format(CommandText.userMessage,
+                    rank, name, id, discordID, UUID, firstSeen, lastSeen, playTime, online,
+                    stats.deaths, stats.kills, stats.mobKills, stats.brokenBlocks, stats.placedBlocks, stats.advancements,
+                    Punishment.toString(bans), Punishment.toString(mutes), active);
+
+        } catch (Exception e) {
+            Bot.getLogger().warn(e, e);
         }
-
-
-        stats = new Statistic(json.getJSONObject("statistic"));
-
-        var array = json.getJSONArray("bans");
-        for (int i = 0; i < array.length(); i++) {
-            bans.add(new Punishment(array.getJSONObject(i)));
-        }
-
-        array = json.getJSONArray("mutes");
-        for (int i = 0; i < array.length(); i++) {
-            mutes.add(new Punishment(array.getJSONObject(i)));
-        }
-
-        asString = String.format(CommandText.userMessage,
-                rank, name, id, discordID, UUID, firstSeen, lastSeen, playTime, online,
-                stats.deaths, stats.kills, stats.mobKills, stats.brokenBlocks, stats.placedBlocks, stats.advancements,
-                Punishment.toString(bans), Punishment.toString(mutes), active);
     }
 
     public static class Punishment {

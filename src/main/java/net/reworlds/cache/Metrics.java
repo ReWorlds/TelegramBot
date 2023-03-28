@@ -5,6 +5,7 @@ import lombok.ToString;
 import net.reworlds.Bot;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class Metrics extends Cache.Oldable {
             json.getJSONArray("tps").forEach(tps -> this.tps.add(tps.toString().replaceAll("\\.\\d+", "")));
 
         } catch (Exception e) {
-            Bot.getLogger().warn(e);
+            Bot.getLogger().warn(e, e);
         }
     }
 }
