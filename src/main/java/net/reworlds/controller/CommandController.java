@@ -8,34 +8,34 @@ import net.reworlds.service.ServiceCommands;
 public class CommandController {
     private final ServiceCommands service;
 
-    @Command("/start")
-    public void start() {
-        service.help();
-    }
-
-    @Command("/help")
+    @Command(value = "/help", aliases = {"/start", "/h"})
     public void help() {
         service.help();
     }
 
-    @Command("/info")
+    @Command(value = "/info", aliases = {"/i"})
     public void info() {
         service.info();
     }
 
-    @Command("/metrics")
+    @Command(value = "/metrics", aliases = {"/m"})
     public void metrics() {
         service.metrics();
     }
 
-    @Command("/user")
+    @Command(value = "/user", aliases = {"/u"})
     public void user() {
         service.user();
     }
 
-    @Command("/skin")
+    @Command(value = "/skin", aliases = {"/s"})
     public void skin() {
         service.skin();
+    }
+
+    @Command(value = "/account", aliases = {"/a", "/link", "/connect"})
+    public void account() {
+        service.account();
     }
 
     // Fun commands

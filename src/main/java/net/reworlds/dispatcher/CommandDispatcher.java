@@ -24,9 +24,13 @@ public class CommandDispatcher {
             Command command = method.getAnnotation(Command.class);
             if (command != null) {
                 String commandId = command.value();
+                String[] aliases = command.aliases();
                 if (commandId.isEmpty()) {
                     defaultMethod = method;
                 } else {
+                    for (String alias: aliases) {
+                        methodHashMap.put(alias, method);
+                    }
                     methodHashMap.put(commandId, method);
                 }
             }
