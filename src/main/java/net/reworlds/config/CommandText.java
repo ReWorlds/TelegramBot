@@ -76,7 +76,7 @@ public class CommandText {
             🔎 <b>RevolutionWorlds | Skin</b>
              ├ Вы не указали никнейм или ID игрока.
              ├ Пример: <code>/skin _Vekster</code>
-             └ Пример: <code>/skin 237</code>
+             └ Пример: <code>/skin 1</code>
             """;
 
     public static final String unknownSkinMessage = """
@@ -107,11 +107,29 @@ public class CommandText {
              └ <a href="https://skin.reworlds.net/raw/cape/%2$s.png">Плащ</a>
             """;
 
+    public static String noAccountMessage = """
+            👤 <b>RevolutionWorlds | Account</b>
+             ├ Вы не указали никнейм или ID игрока.
+             ├ Пример: <code>/account _Vekster</code>
+             └ Пример: <code>/account 1</code>
+            """;
+
+    public static String unknownAccountMessage = """
+            👤 <b>RevolutionWorlds | Account</b>
+             └ Игрока с никнеймом или id <code>%1$s</code> не существует.
+            """;
+
+    public static String accountMessage = """
+            👤 <b>RevolutionWorlds | Account</b>
+             ├ Успешная синхронизация аккаунта!
+             └ Вы можете использовать команды /user и /skin можно использовать без аргументов!
+            """;
+
     // Fun commands
 
     public static final String noCoinMessage = """
             🪙 <b>Fun | Coin</b>
-             ├ Вы не указали ставку.
+             ├ Вы не указали ставку. Ставка должна быть целым числом. (от 61 до 31622399)
              └ Пример: <code>/coin 61</code>
             """;
 
@@ -126,5 +144,4 @@ public class CommandText {
              ├ Выпало: %1$s
              └ %2$s
             """;
-
 }
