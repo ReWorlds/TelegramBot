@@ -2,10 +2,8 @@ package net.reworlds.cache;
 
 import lombok.Getter;
 import lombok.ToString;
-import net.reworlds.Bot;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -25,20 +23,15 @@ public class Metrics extends Cache.Oldable {
 
     public Metrics() {
         JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/server");
-        if (json == null) {
+        if (json == null || json.has("error-code")) {
             return;
         }
         this.requestTime = (int) (System.currentTimeMillis() / 1000L);
 
-        try {
-            updateTime = DateFormatter.formatDate(new Date(json.getLong("update-time")));
-            online = json.getInt("online");
+        updateTime = DateFormatter.formatDate(new Date(json.getLong("update-time")));
+        online = json.getInt("online");
 
-            json.getJSONArray("players").forEach(player -> this.players.add(player.toString()));
-            json.getJSONArray("tps").forEach(tps -> this.tps.add(tps.toString().replaceAll("\\.\\d+", "")));
-
-        } catch (Exception e) {
-            Bot.getLogger().warn(e, e);
-        }
+        json.getJSONArray("players").forEach(player -> this.players.add(player.toString()));
+        json.getJSONArray("tps").forEach(tps -> this.tps.add(tps.toString().replaceAll("\\.\\d+", "")));
     }
 }

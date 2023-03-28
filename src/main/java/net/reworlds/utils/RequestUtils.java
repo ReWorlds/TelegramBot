@@ -13,6 +13,9 @@ public class RequestUtils {
         try {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
             HttpResponse<String> response = Bot.getClient().send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                return null;
+            }
             return new JSONObject(response.body());
 
         } catch (IOException | InterruptedException e) {
