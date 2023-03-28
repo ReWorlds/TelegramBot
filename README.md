@@ -1,5 +1,5 @@
 # **TelegramBot**
-Telegram Bot для проекта RevolutionWorlds, использующий API.
+Telegram Bot для проекта RevolutionWorlds, использующий api.reworlds.net.
 
 [Официальный бот](https://t.me/RevolutionWorldsBOT)
 
