@@ -58,6 +58,9 @@ public class Release extends Cache.Oldable {
                 .replaceFirst("-", "")
                 .replaceAll("`", "")
                 .replaceAll("\r\n-", "\r\n ├"), "├", "└");
+        if (!description.matches("\r\n")) {
+            description = description.replace("├", "└");
+        }
 
         asString = String.format(CommandText.releaseMessage, tag, releaseUrl, name, draft, preRelease, authorUrl,
                 author, releaseDate, description);
