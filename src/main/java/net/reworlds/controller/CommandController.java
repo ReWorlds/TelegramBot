@@ -8,34 +8,39 @@ import net.reworlds.service.ServiceCommands;
 public class CommandController {
     private final ServiceCommands service;
 
-    @Command(value = "/help", aliases = {"/start", "/h"})
+    @Command(value = "/help", aliases = {"/start"})
     public void help() {
         service.help();
     }
 
-    @Command(value = "/info", aliases = {"/i"})
+    @Command("/info")
     public void info() {
         service.info();
     }
 
-    @Command(value = "/metrics", aliases = {"/m"})
+    @Command("/metrics")
     public void metrics() {
         service.metrics();
     }
 
-    @Command(value = "/user", aliases = {"/u"})
+    @Command(value = "/user", aliases = {"/player"})
     public void user() {
         service.user();
     }
 
-    @Command(value = "/skin", aliases = {"/s"})
+    @Command("/skin")
     public void skin() {
         service.skin();
     }
 
-    @Command(value = "/account", aliases = {"/a", "/link", "/connect"})
+    @Command(value = "/account", aliases = {"/link", "/connect"})
     public void account() {
         service.account();
+    }
+
+    @Command(value = "/release", aliases = {"/version", "/update"})
+    public void release() {
+        service.release();
     }
 
     // Fun commands
