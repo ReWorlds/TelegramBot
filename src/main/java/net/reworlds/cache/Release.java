@@ -54,15 +54,18 @@ public class Release extends Cache.Oldable {
         author = json.getJSONObject("author").getString("login");
         releaseDate = json.getString("published_at");
         releaseDate = releaseDate.substring(0, releaseDate.length() - 1);
-        description = MessageUtils.replaceLast(json.getString("body")
+
+        description = json.getString("body");
+        String text = CommandText.releaseMessage;
+        if (!description.matches("\r\n")) {
+            text = MessageUtils.replaceLast(text, "├", "└");
+        }
+        description = MessageUtils.replaceLast(description
                 .replaceFirst("-", "")
                 .replaceAll("`", "")
                 .replaceAll("\r\n-", "\r\n ├"), "├", "└");
-        if (!description.matches("\r\n")) {
-            description = description.replace("├", "└");
-        }
 
-        asString = String.format(CommandText.releaseMessage, tag, releaseUrl, name, draft, preRelease, authorUrl,
+        asString = String.format(text, tag, releaseUrl, name, draft, preRelease, authorUrl,
                 author, releaseDate, description);
     }
 }
