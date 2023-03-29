@@ -1,6 +1,7 @@
 package net.reworlds.cache;
 
 import lombok.Getter;
+import net.reworlds.Bot;
 import net.reworlds.config.CommandText;
 import net.reworlds.utils.MessageUtils;
 import net.reworlds.utils.RequestUtils;
@@ -57,13 +58,15 @@ public class Release extends Cache.Oldable {
 
         description = json.getString("body");
         String text = CommandText.releaseMessage;
-        if (!description.matches("\r\n")) {
+        if (!description.contains("\r\n")) {
             text = MessageUtils.replaceLast(text, "├", "└");
+            description = description.replaceFirst("-", "");
+        } else {
+            description = MessageUtils.replaceLast(description
+                    .replaceFirst("-", "")
+                    .replaceAll("`", "")
+                    .replaceAll("\r\n-", "\r\n ├"), "├", "└");
         }
-        description = MessageUtils.replaceLast(description
-                .replaceFirst("-", "")
-                .replaceAll("`", "")
-                .replaceAll("\r\n-", "\r\n ├"), "├", "└");
 
         asString = String.format(text, tag, releaseUrl, name, draft, preRelease, authorUrl,
                 author, releaseDate, description);
