@@ -20,10 +20,18 @@ public class Metrics extends Cache.Oldable {
     private int online = 0;
     @Getter
     private String updateTime;
+    @Getter
+    private boolean brokenRequest = false;
+    @Getter
+    private boolean metricsExists = false;
 
     public Metrics() {
         JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/server");
-        if (json == null || json.has("error-code")) {
+        if (json == null) {
+            brokenRequest = true;
+            return;
+        }
+        if (json.has("error-code")) {
             return;
         }
         this.requestTime = (int) (System.currentTimeMillis() / 1000L);
@@ -33,5 +41,6 @@ public class Metrics extends Cache.Oldable {
 
         json.getJSONArray("players").forEach(player -> this.players.add(player.toString()));
         json.getJSONArray("tps").forEach(tps -> this.tps.add(tps.toString().replaceAll("\\.\\d+", "")));
+        metricsExists = true;
     }
 }
