@@ -40,8 +40,8 @@ public class CommandText {
     public static final String noUserMessage = """
             🔎 <b>RevolutionWorlds | User</b>
              ├ Вы не указали никнейм или id игрока.
-             ├ Пример: <code>/%1$s _Vekster</code>
-             └ Пример: <code>/%1$s 1</code>
+             ├ Пример: <code>%1$s _Vekster</code>
+             └ Пример: <code>%1$s 1</code>
             """;
 
     public static final String unknownUserMessage = """
@@ -116,8 +116,8 @@ public class CommandText {
     public static String noAccountMessage = """
             👤 <b>RevolutionWorlds | Account</b>
              ├ Вы не указали никнейм или ID игрока.
-             ├ Пример: <code>/%1$s _Vekster</code>
-             └ Пример: <code>/%1$s 1</code>
+             ├ Пример: <code>%1$s _Vekster</code>
+             └ Пример: <code>%1$s 1</code>
             """;
 
     public static String unknownAccountMessage = """
