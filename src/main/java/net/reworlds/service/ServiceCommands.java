@@ -27,11 +27,13 @@ public class ServiceCommands {
     private final TelegramBot bot;
     private final Update update;
     private final String[] args;
+    private final String command;
 
     public ServiceCommands(TelegramBot bot, Update update, String... args) {
         this.bot = bot;
         this.update = update;
         this.args = args;
+        this.command = args[0].split("@")[0];
     }
 
     private void execute(SendMessage request) {
@@ -65,7 +67,7 @@ public class ServiceCommands {
         if (args.length < 2) {
             String account = Cache.getAccountLink(update.message().from().id());
             if ("".equals(account)) {
-                execute(MessageUtils.buildMessage(update, String.format(CommandText.noUserMessage, args[0])));
+                execute(MessageUtils.buildMessage(update, String.format(CommandText.noUserMessage, command)));
                 return;
             }
             executeUser(Cache.getPlayer(account));
@@ -119,7 +121,7 @@ public class ServiceCommands {
         User user = update.message().from();
 
         if (args.length < 2) {
-            execute(MessageUtils.buildMessage(update, String.format(CommandText.noAccountMessage, args[0])));
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.noAccountMessage, command)));
             return;
         }
 
