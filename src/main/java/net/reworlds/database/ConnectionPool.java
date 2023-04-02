@@ -16,7 +16,7 @@ public class ConnectionPool {
 
     static {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             config.setJdbcUrl("jdbc:mysql://%s/%s"
                     .formatted(Bot.getJson().getString("database-host"), Bot.getJson().getString("database-name")));
             config.setUsername(Bot.getJson().getString("database-user"));
