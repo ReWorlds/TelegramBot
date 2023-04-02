@@ -28,7 +28,7 @@ public class CommandDispatcher {
                 if (commandId.isEmpty()) {
                     defaultMethod = method;
                 } else {
-                    for (String alias: aliases) {
+                    for (String alias : aliases) {
                         methodHashMap.put(alias, method);
                     }
                     methodHashMap.put(commandId, method);
@@ -40,7 +40,8 @@ public class CommandDispatcher {
     public void executeCommand(String command, Update update) throws InvocationTargetException, IllegalAccessException {
         Method method = methodHashMap.getOrDefault(command, defaultMethod);
         if (method != null) {
-            Bot.getLogger().info(update.message().from().username() + " " + update.message().text());
+            Bot.getLogger().info("{user: " + update.message().from().username() + ", chat-name: " + update.message().chat().username()
+                    + ", message: " + update.message().text() + "}");
             method.invoke(controller);
         }
     }
