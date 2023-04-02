@@ -65,7 +65,7 @@ public class ServiceCommands {
         if (args.length < 2) {
             String account = Cache.getAccountLink(update.message().from().id());
             if ("".equals(account)) {
-                execute(MessageUtils.buildMessage(update, CommandText.noUserMessage));
+                execute(MessageUtils.buildMessage(update, String.format(CommandText.noUserMessage, args[0])));
                 return;
             }
             executeUser(Cache.getPlayer(account));
@@ -75,12 +75,17 @@ public class ServiceCommands {
     }
 
     public void executeUser(Player player) {
-        if (player.getName() == null) {
-            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownUserMessage, args[1])));
+        if (player.isBrokenRequest()) {
+            execute(MessageUtils.buildMessage(update, CommandText.brokenRequestRW));
             return;
         }
 
-        execute(MessageUtils.buildMessage(update, player.getAsString()));
+        if (!player.isUserExists()) {
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownUserMessage, player.getArg())));
+            return;
+        }
+
+        execute(MessageUtils.buildMessage(update, player.getAsStringPlayer()));
     }
 
     public void skin() {
@@ -97,19 +102,24 @@ public class ServiceCommands {
     }
 
     public void executeSkin(Player player) {
-        if (player.getName() == null) {
-            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownSkinMessage, args[1])));
+        if (player.isBrokenRequest()) {
+            execute(MessageUtils.buildMessage(update, CommandText.brokenRequestRW));
             return;
         }
-        execute(MessageUtils.buildMessage(update, String.format(CommandText.skinMessage, player.getRank(), player.getName(), player.getId(),
-                player.getDiscordID(), player.getUUID())));
+
+        if (!player.isUserExists()) {
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownSkinMessage, player.getArg())));
+            return;
+        }
+
+        execute(MessageUtils.buildMessage(update, player.getAsStringSkin()));
     }
 
     public void account() {
         User user = update.message().from();
 
         if (args.length < 2) {
-            execute(MessageUtils.buildMessage(update, CommandText.noAccountMessage));
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.noAccountMessage, args[0])));
             return;
         }
 
@@ -141,8 +151,13 @@ public class ServiceCommands {
     }
 
     public void executeRelease(Release release) {
-        if (release.getName() == null) {
-            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownReleaseMessage, args[1])));
+        if (release.isBrokenRequest()) {
+            execute(MessageUtils.buildMessage(update, CommandText.brokenRequestGIT));
+            return;
+        }
+
+        if (!release.isReleaseExists()) {
+            execute(MessageUtils.buildMessage(update, String.format(CommandText.unknownReleaseMessage, release.getArg())));
             return;
         }
 
