@@ -15,6 +15,8 @@ import java.util.List;
 
 public class Player extends Cache.Oldable {
     @Getter
+    private final String arg;
+    @Getter
     private int id;
     @Getter
     private String name;
@@ -41,13 +43,29 @@ public class Player extends Cache.Oldable {
     @Getter
     private String active = "";
     @Getter
-    private String asString;
+    private String asStringPlayer;
+    @Getter
+    private String asStringSkin;
+    @Getter
+    private boolean brokenRequest = false;
+    @Getter
+    private boolean userExists = false;
 
     public Player(String player) {
+        arg = player;
+
         JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
-        if (json == null || json.has("error-code")) {
+        if (json == null) {
+            brokenRequest = true;
+            return;
+        }
+        if (json.has("error-code")) {
             json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
-            if (json == null || json.has("error-code")) {
+            if (json == null) {
+                brokenRequest = true;
+                return;
+            }
+            if (json.has("error-code")) {
                 return;
             }
         }
@@ -92,11 +110,12 @@ public class Player extends Cache.Oldable {
             mutes.add(new Punishment(array.getJSONObject(i)));
         }
 
-        asString = String.format(CommandText.userMessage,
+        asStringPlayer = String.format(CommandText.userMessage,
                 rank, name, id, discordID, UUID, firstSeen, lastSeen, playTime, online,
                 stats.deaths, stats.kills, stats.mobKills, stats.brokenBlocks, stats.placedBlocks, stats.advancements,
                 Punishment.toString(bans), Punishment.toString(mutes), active);
-
+        asStringSkin = String.format(CommandText.skinMessage, rank, name, id, discordID, UUID);
+        userExists = true;
     }
 
     public static class Punishment {
