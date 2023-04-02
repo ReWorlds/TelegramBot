@@ -64,7 +64,7 @@ public class Release extends Cache.Oldable {
         authorUrl = json.getJSONObject("author").getString("html_url");
         author = json.getJSONObject("author").getString("login");
         releaseDate = json.getString("published_at");
-        releaseDate = releaseDate.substring(0, releaseDate.length() - 1);
+        releaseDate = releaseDate.replaceAll("[TZ]+", " ").trim();
 
         description = json.getString("body");
         String text = CommandText.releaseMessage;
