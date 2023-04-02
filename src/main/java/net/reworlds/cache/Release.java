@@ -1,14 +1,14 @@
 package net.reworlds.cache;
 
 import lombok.Getter;
-import net.reworlds.Bot;
 import net.reworlds.config.CommandText;
 import net.reworlds.utils.MessageUtils;
 import net.reworlds.utils.RequestUtils;
 import org.json.JSONObject;
 
 public class Release extends Cache.Oldable {
-
+    @Getter
+    private String arg;
     @Getter
     private String tag;
     @Getter
@@ -29,6 +29,10 @@ public class Release extends Cache.Oldable {
     private String description;
     @Getter
     private String asString;
+    @Getter
+    private boolean brokenRequest = false;
+    @Getter
+    private boolean releaseExists = false;
 
     public Release(String tag) {
         JSONObject json;
@@ -37,12 +41,18 @@ public class Release extends Cache.Oldable {
         } else {
             json = RequestUtils.getJSON("https://api.github.com/repos/ReWorlds/TelegramBot/releases/tags/" + tag);
         }
-        if (json == null || json.has("documentation_url")) {
+        if (json == null) {
+            brokenRequest = true;
+            return;
+        }
+        if (json.has("documentation_url")) {
             return;
         }
         this.requestTime = (int) (System.currentTimeMillis() / 1000L);
 
         getInfo(json);
+        arg = tag;
+        releaseExists = true;
     }
 
     private void getInfo(JSONObject json) {
