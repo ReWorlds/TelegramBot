@@ -1,4 +1,4 @@
-package net.reworlds.config;
+package net.reworlds.command;
 
 public class CommandText {
     public static final String helpMessage = """
@@ -20,9 +20,9 @@ public class CommandText {
 
     public static final String infoMessage = """
             🔐 <b>RevolutionWorlds | Help</b>
-             ├ Для начала вам нужно зарегистрировать ваш аккаунт через бота на нашем <a href="https://discord.gg/vuFwdJ8">Discord сервере</a>.          
-             ├ ❗️ <b>Bedrock</b>: После регистрации необходимо обратиться к администратору Kynth#6029 в личном сообщении в Discord.         
-             ├ ❗️ <b>Java</b>: После регистрации необходимо установить мод ReProtect на одну из модификаций Minecraft'а в <a href="https://discord.com/channels/682240333366558732/1083755321576665189">Discord канале #ReProtect</a>         
+             ├ Для начала вам нужно зарегистрировать ваш аккаунт через бота на нашем <a href="https://discord.gg/vuFwdJ8">Discord сервере</a>.
+             ├ ❗️ <b>Bedrock</b>: После регистрации необходимо обратиться к администратору Kynth#6029 в личном сообщении в Discord.
+             ├ ❗️ <b>Java</b>: После регистрации необходимо установить мод ReProtect на одну из модификаций Minecraft в <a href="https://discord.com/channels/682240333366558732/1083755321576665189">Discord канале #ReProtect</a>.
              ├ После установки модификации или после ответа от администратора вы можете играть, присоединившись к одному из IP ниже:
              ├ play.reworlds.net
              ├ eu.reworlds.net
@@ -146,13 +146,18 @@ public class CommandText {
              ├%9$s
             """;
 
+    public static String errorRequest = """
+            🚫 <b>RevolutionWorlds | Request</b>
+             └ Возникла ошибка при отправке запроса.
+            """;
+
     public static String brokenRequestRW = """
-            👤 <b>RevolutionWorlds | Request</b>
+            🚫 <b>RevolutionWorlds | Request</b>
              └ Нет ответа от api.reworlds.net.
             """;
 
     public static String brokenRequestGIT = """
-            👤 <b>RevolutionWorlds | Request</b>
+            🚫 <b>RevolutionWorlds | Request</b>
              └ Нет ответа от api.github.com.
             """;
 
