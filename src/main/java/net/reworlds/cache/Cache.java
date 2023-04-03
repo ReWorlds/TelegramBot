@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cache {
+public final class Cache {
     private static boolean isRunningGB = false;
     private static Metrics metrics;
 
@@ -51,7 +51,7 @@ public class Cache {
         }
         player = new Player(user);
         players.put(user, player);
-        if (player.isUserExists()) {
+        if (player.getStatus() == Status.READY) {
             players.put("" + player.getId(), player);
         }
         return player;
@@ -163,8 +163,23 @@ public class Cache {
     public static class Oldable {
         int requestTime;
 
+        /**
+         * Возвращает <code>boolean</code> ответ состояния старости объекта, где true - устарел.
+         *
+         * @return true, если прошло 60 секунд с момента создания объекта.
+         */
         boolean old() {
             return requestTime + 60 < System.currentTimeMillis() / 1000L;
         }
+    }
+
+    /**
+     * Enum класс для обобщения статуса кэшируемых объектов (Metrics, Player, Release)
+     */
+    public enum Status {
+        READY,
+        ERROR,
+        BROKEN,
+        API_ERROR
     }
 }
