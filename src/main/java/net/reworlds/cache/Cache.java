@@ -2,6 +2,7 @@ package net.reworlds.cache;
 
 import net.reworlds.Bot;
 import net.reworlds.database.ConnectionPool;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,14 +17,32 @@ public class Cache {
     private static final Map<String, Player> players = new HashMap<>();
     private static final Map<String, Release> releases = new HashMap<>();
 
-    public static Metrics getMetrics() {
+    /**
+     * Получение метрики сервера из "кэша".
+     * В случае, если в кэше нет метрики или метрика устарела, делает новый объект <code>Metrics</code>,
+     * который добавляется в кэш и после передается из функции.
+     *
+     * @return объект <code>Metrics</code>.
+     * @see Metrics
+     */
+    public static @NotNull Metrics getMetrics() {
         if (metrics != null && !metrics.old()) {
             return metrics;
         }
         return metrics = new Metrics();
     }
 
-    public static Player getPlayer(String user) {
+    /**
+     * Получение игрока сервера из "кэша" через строку, которая может быть как никнеймом, так и ID игрока.
+     * В случае, если в кэше нет игрока или данные об игроке устарели, делается новый объект <code>Player</code>,
+     * который добавляется в кэш и после передается из функции.
+     * В сам кэш попадает 2 объекта с ключами в виде никнейма и ID.
+     *
+     * @param user никнейм или ID игрока
+     * @return объект <code>Player</code>.
+     * @see Player
+     */
+    public static @NotNull Player getPlayer(@NotNull String user) {
         user = user.toLowerCase();
 
         Player player = players.get(user);
@@ -32,34 +51,53 @@ public class Cache {
         }
         player = new Player(user);
         players.put(user, player);
-        if (player.getName() != null) {
+        if (player.isUserExists()) {
             players.put("" + player.getId(), player);
         }
         return player;
     }
 
-    private static Release getRelease(String tag, boolean latest) {
+    /**
+     * Получение релиза бота из "кэша" через строку.
+     * В случае, если в кэше нет релиза или данные о релизе устарели, делается новый объект <code>Release</code>.
+     * В случае, если <code>tag</code> - "latest", в кэш будет записано 2 ключа релиза - latest и сам тег.
+     *
+     * @param tag версия обновления бота.
+     * @return объект <code>Release</code>.
+     * @see Release
+     */
+    public static @NotNull Release getRelease(@NotNull String tag) {
         Release release = releases.get(tag);
         if (release != null && !release.old()) {
             return release;
         }
         release = new Release(tag);
         releases.put(tag, release);
-        if (latest) {
+        if ("latest".equals(tag)) {
             releases.put(release.getTag(), release);
         }
         return release;
     }
 
-    public static Release getRelease(String tag) {
-        return getRelease(tag, false);
+    /**
+     * Получение последнего релиза бота из "кэша".
+     * В случае, если в кэше нет релиза или данные о релизе устарели, делается новый объект <code>Release</code>.
+     * В кэш будет записано 2 ключа релиза - latest и сам тег.
+     *
+     * @return объект <code>Release</code>.
+     * @see Release
+     */
+    public static @NotNull Release getRelease() {
+        return getRelease("latest");
     }
 
-    public static Release getRelease() {
-        return getRelease("latest", true);
-    }
-
-    public static String getAccountLink(Long id) {
+    /**
+     * Получение связи пользователя telegram с идентификатором (никнейм или id) игрока сервера.
+     *
+     * @param id id пользователя telegram.
+     * @return идентификатор игрока сервера.
+     */
+    public static @NotNull String getAccountLink(long id) {
 
         String account = accounts.get(id);
         if (account != null) {
@@ -83,10 +121,19 @@ public class Cache {
         return accounts.get(id);
     }
 
-    public static void setAccountLink(Long id, String name) {
+    /**
+     * Установка связи пользователя telegram с идентификатором (никнейм или id) игрока сервера.
+     *
+     * @param id id пользователя telegram.
+     */
+    public static void setAccountLink(long id, @NotNull String name) {
         accounts.put(id, name);
     }
 
+    /**
+     * Коллектор мусора, убирающий устаревшие данные из кэша.
+     * Запускается единожды.
+     */
     public static void collector() {
         if (isRunningGB) {
             return;
@@ -109,6 +156,10 @@ public class Cache {
         t.start();
     }
 
+    /**
+     * Особый класс, от которого наследуются все кэшируемые объекты (Metrics, Player, Release)
+     * Хранит в себе время создания запроса и метод old, возвращающий true, если объект существует >= 60 секунд.
+     */
     public static class Oldable {
         int requestTime;
 
