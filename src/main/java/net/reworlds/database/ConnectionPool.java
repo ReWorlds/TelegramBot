@@ -7,7 +7,7 @@ import net.reworlds.Bot;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionPool {
+public final class ConnectionPool {
 
     public static String setAccountString;
     public static String getAccountString;

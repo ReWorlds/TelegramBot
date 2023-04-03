@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class DateFormatter {
+public final class DateFormatter {
 
     public static final String unknownDate = "неизвестно";
     public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

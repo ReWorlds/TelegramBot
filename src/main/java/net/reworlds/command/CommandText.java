@@ -1,6 +1,6 @@
 package net.reworlds.command;
 
-public class CommandText {
+public final class CommandText {
     public static final String helpMessage = """
             📃 <b>RevolutionWorlds | Help</b>
              ├ Список зарегистрированных команд в этом боте:

@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-public class RequestUtils {
+public final class RequestUtils {
     /**
      * Позволяет получать <code>JSONObject</code> с REST API страниц.
      *
