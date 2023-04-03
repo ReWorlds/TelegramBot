@@ -144,7 +144,7 @@ public final class CommandService {
             return;
         }
 
-        if (player.getStatus() != Status.API_ERROR) {
+        if (player.getStatus() == Status.API_ERROR) {
             execute(String.format(CommandText.unknownUserMessage, player.getArg()));
             return;
         }
