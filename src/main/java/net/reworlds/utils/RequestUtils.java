@@ -1,6 +1,7 @@
 package net.reworlds.utils;
 
 import net.reworlds.Bot;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class RequestUtils {
      * @param url ссылка на страницу, с которой необъодимо взять json.
      * @return JSONObject, в случае успешного (200) запроса или null, в случае, если запрос не удался.
      */
-    public static JSONObject getJSON(String url) throws IOException, InterruptedException {
+    public static JSONObject getJSON(@NotNull String url) throws IOException, InterruptedException {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofSeconds(1)).build();
             HttpResponse<String> response = Bot.getClient().send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
