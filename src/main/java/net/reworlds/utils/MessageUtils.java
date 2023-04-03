@@ -1,27 +1,20 @@
 package net.reworlds.utils;
 
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.request.SendMessage;
+import org.jetbrains.annotations.NotNull;
 
-public class MessageUtils {
-    public static SendMessage buildMessage(Update update, String text) {
-        var message = update.message();
-        var sendMessage = new SendMessage(message.chat().id(), text);
-        sendMessage.parseMode(ParseMode.HTML);
-        sendMessage.disableWebPagePreview(true);
-        sendMessage.replyToMessageId(update.message().messageId());
-        return sendMessage;
-    }
-
-    public static String replaceLast(String string, String toReplace, String replacement) {
+public final class MessageUtils {
+    /**
+     * Заменяет последнее совпадение <code>toReplace</code> на <code>replacement</code> в строке <code>string</code>.
+     *
+     * @param string      Оригинальная строка.
+     * @param toReplace   Заменяемая строка.
+     * @param replacement Заменяющая строка.
+     * @return Измененная строка, где последняя строка <code>toReplace</code> была заменена.
+     * на <code>replacement</code> или изначальную строку, если искомая строка отсутствует.
+     */
+    public static @NotNull String replaceLast(@NotNull String string, @NotNull String toReplace, @NotNull String replacement) {
         int pos = string.lastIndexOf(toReplace);
-        if (pos > -1) {
-            return string.substring(0, pos)
-                    + replacement
-                    + string.substring(pos + toReplace.length());
-        } else {
-            return string;
-        }
+        return pos > -1 ? string.substring(0, pos) + replacement + string.substring(pos + toReplace.length())
+                : string;
     }
 }
