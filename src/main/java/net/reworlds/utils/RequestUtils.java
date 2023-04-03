@@ -19,11 +19,11 @@ public final class RequestUtils {
      * @return JSONObject, в случае успешного (200) запроса или null, в случае, если запрос не удался.
      */
     public static @Nullable JSONObject getJSON(@NotNull String url) throws IOException, InterruptedException {
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofSeconds(1)).build();
-            HttpResponse<String> response = Bot.getClient().send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() != 200) {
-                return null;
-            }
-            return new JSONObject(response.body());
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofSeconds(1)).build();
+        HttpResponse<String> response = Bot.getClient().send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return null;
+        }
+        return new JSONObject(response.body());
     }
 }
