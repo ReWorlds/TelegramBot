@@ -1,12 +1,15 @@
 package net.reworlds.cache;
 
 import lombok.Getter;
-import net.reworlds.config.CommandText;
+import net.reworlds.Bot;
+import net.reworlds.command.CommandText;
 import net.reworlds.utils.MessageUtils;
 import net.reworlds.utils.RequestUtils;
 import org.json.JSONObject;
 
-public class Release extends Cache.Oldable {
+import java.io.IOException;
+
+public final class Release extends Cache.Oldable {
     @Getter
     private String arg;
     @Getter
@@ -30,6 +33,8 @@ public class Release extends Cache.Oldable {
     @Getter
     private String asString;
     @Getter
+    private boolean errorRequest = false;
+    @Getter
     private boolean brokenRequest = false;
     @Getter
     private boolean releaseExists = false;
@@ -37,9 +42,21 @@ public class Release extends Cache.Oldable {
     public Release(String tag) {
         JSONObject json;
         if ("latest".equals(tag)) {
-            json = RequestUtils.getJSON("https://api.github.com/repos/ReWorlds/TelegramBot/releases/latest");
+            try {
+                json = RequestUtils.getJSON("https://api.github.com/repos/ReWorlds/TelegramBot/releases/latest");
+            } catch (IOException | InterruptedException e) {
+                Bot.getLogger().warn(e, e);
+                errorRequest = true;
+                return;
+            }
         } else {
-            json = RequestUtils.getJSON("https://api.github.com/repos/ReWorlds/TelegramBot/releases/tags/" + tag);
+            try {
+                json = RequestUtils.getJSON("https://api.github.com/repos/ReWorlds/TelegramBot/releases/tags/" + tag);
+            } catch (IOException | InterruptedException e) {
+                Bot.getLogger().warn(e, e);
+                errorRequest = true;
+                return;
+            }
         }
         if (json == null) {
             brokenRequest = true;
