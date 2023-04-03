@@ -1,6 +1,9 @@
 package net.reworlds.config;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -11,32 +14,64 @@ import java.nio.file.Paths;
 
 @Data
 public final class JSONManager {
+    @Setter(AccessLevel.PRIVATE)
     private Path path;
     private JSONObject jsonObject;
 
-    public JSONManager(String path) throws IOException {
+    /**
+     * Конструктор класса, заполняющийся объектом <code>Path</code> с путем до файла
+     * и объектом <code>JSONObject</code> с данными из файла.
+     *
+     * @param path путь до json файла, который необходимо открыть.
+     */
+    public JSONManager(@NotNull String path) throws IOException {
         this.path = getPath(path);
-        this.jsonObject = new JSONObject(Files.readString(this.path, StandardCharsets.UTF_8));
+        create();
+        this.jsonObject = getObject();
     }
 
-    private Path getPath(String stringPath) throws IOException {
-        Path path = Paths.get(stringPath);
+    /**
+     * Получает путь до файла в виде строки и возвращает в виде объекта <code>Path</code>.
+     *
+     * @param stringPath путь до файла в виде строки.
+     * @return путь до файла
+     * @see Path
+     */
+    private @NotNull Path getPath(@NotNull String stringPath) {
+        return Paths.get(stringPath);
+    }
+
+    /**
+     * Создает директории и сам файл по пути в объекте, если они отсутствуют.
+     */
+    private void create() throws IOException {
         if (!Files.isDirectory(path.getParent())) {
-            Files.createDirectory(path.getParent());
+            Files.createDirectories(path.getParent());
         }
         if (Files.notExists(path)) {
             Files.createFile(path);
         }
-
-        return path;
     }
 
-    public JSONManager updateFile() throws IOException {
+    /**
+     * Позволяет обновить файл, используя вложенный объект <code>JSONObject</code>.
+     *
+     * @return тот же объект используемого класса.
+     */
+    public @NotNull JSONManager updateFile() throws IOException {
         Files.writeString(path, this.jsonObject.toString(), StandardCharsets.UTF_8);
         return this;
     }
 
-    public JSONManager updateFile(JSONObject jsonObject, boolean saveInObject) throws IOException {
+    /**
+     * Позволяет обновить файл используя передаваемый объект <code>JSONObject</code>, который также можно
+     * сохранить внутри объекта <code>JSONManager</code>, передав <code>boolean</code> аргумент для сохранения.
+     *
+     * @param jsonObject   объект класса <code>jsonObject</code>, который требуется сохранить в файл.
+     * @param saveInObject <code>boolean</code> тип данных, при <code>true</code> сохраняет передаваемые данные в объект.
+     * @return тот же объект используемого класса.
+     */
+    public @NotNull JSONManager updateFile(@NotNull JSONObject jsonObject, boolean saveInObject) throws IOException {
         if (saveInObject) {
             this.jsonObject = jsonObject;
         }
@@ -44,7 +79,24 @@ public final class JSONManager {
         return this;
     }
 
-    public static JSONManager of(String path) throws IOException {
+    /**
+     * Позволяет получить объект <code>JSONObject</code>, заполненный данными из файла, который
+     * находится по пути из конструктора объекта.
+     * В случае, если файл или директории до файла были удалены, они будут созданы вновь.
+     *
+     * @return объект <code>JSONObject</code>.
+     */
+    public @NotNull JSONObject getObject() throws IOException {
+        create();
+        return new JSONObject(Files.readString(this.path, StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Cтатический метод для создания объекта класса <code>JSONManager</code>.
+     *
+     * @param path путь до json файла, который необходимо открыть.
+     */
+    public static @NotNull JSONManager of(@NotNull String path) throws IOException {
         return new JSONManager(path);
     }
 }
