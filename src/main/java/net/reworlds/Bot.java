@@ -1,6 +1,5 @@
 package net.reworlds;
 
-import com.pengrad.telegrambot.Callback;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Message;
@@ -8,19 +7,16 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 import lombok.Getter;
 import net.reworlds.cache.Cache;
-import net.reworlds.config.CommandText;
+import net.reworlds.command.CommandDispatcher;
+import net.reworlds.command.CommandService;
+import net.reworlds.command.CommandText;
 import net.reworlds.config.JSONManager;
-import net.reworlds.controller.CommandController;
-import net.reworlds.dispatcher.CommandDispatcher;
-import net.reworlds.service.ServiceCommands;
 import net.reworlds.utils.DateFormatter;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpClient;
 import java.text.SimpleDateFormat;
@@ -30,17 +26,20 @@ import java.util.Date;
  * @author Statuxia
  */
 
-public class Bot {
+public final class Bot {
     private static final int launchTime = (int) (System.currentTimeMillis() / 1000L);
+    private static final long revolutionWorldsChatId = -1001642226305L;
+    private static final String token;
+    @Getter
+    private static final HttpClient client = HttpClient.newHttpClient();
     @Getter
     private static final JSONObject json;
-    private static final String token;
-    private static final long revolutionWorldsChatId = -1001642226305L;
+    @Getter
+    private static TelegramBot bot;
 
     static {
         // log4j time
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        System.setProperty("current.date", dateFormat.format(new Date()));
+        System.setProperty("current.date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
         // bot token
         try {
@@ -54,16 +53,12 @@ public class Bot {
     }
 
     @Getter
-    private static final HttpClient client = HttpClient.newHttpClient();
-
-    @Getter
     private static final Logger logger = Logger.getLogger(Bot.class);
 
     public static void main(String[] args) {
-        logger.info("Launch Time > " + DateFormatter.formatDate(new Date()));
-        TelegramBot bot = new TelegramBot(token);
+        bot = new TelegramBot(token);
         Cache.collector();
-
+        logger.info("Launch Time > " + DateFormatter.formatDate(new Date()));
 
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
@@ -72,26 +67,18 @@ public class Bot {
                 }
 
                 Message message = update.message();
+                // Игнорируем все, что не является сообщением или было отправлено до запуска бота
                 if (message == null || message.date() < launchTime) {
                     continue;
                 }
 
+                // Отправка правил пользователю, который вошел в telegram чат RevolutionWorlds
+                // return'а нет, потому что если newChatMembers() != null, text() == null
                 if (revolutionWorldsChatId == message.chat().id() && message.newChatMembers() != null) {
                     for (User member : message.newChatMembers()) {
-                        var sendMessage = new SendMessage(member.id(), CommandText.rulesMessage);
-                        sendMessage.parseMode(ParseMode.HTML);
-                        sendMessage.disableWebPagePreview(true);
-                        bot.execute(sendMessage, new Callback<SendMessage, SendResponse>() {
-                            @Override
-                            public void onResponse(SendMessage request, SendResponse response) {
-
-                            }
-
-                            @Override
-                            public void onFailure(SendMessage request, IOException e) {
-
-                            }
-                        });
+                        CommandService.execute(new SendMessage(member.id(), CommandText.rulesMessage)
+                                .parseMode(ParseMode.HTML)
+                                .disableWebPagePreview(true));
                     }
                 }
 
@@ -99,18 +86,14 @@ public class Bot {
                     continue;
                 }
 
-                String[] text = message.text().split("\\s");
-                String command = text[0].split("@")[0];
-
-                CommandDispatcher dispatcher = new CommandDispatcher(new CommandController(new ServiceCommands(bot, update, text)));
+                var dispatcher = new CommandDispatcher(new CommandService(update.message()));
                 try {
-                    dispatcher.executeCommand(command, update);
+                    dispatcher.executeCommand();
                 } catch (InvocationTargetException | IllegalAccessException e) {
                     logger.warn(e, e);
                 }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
-
     }
 }
