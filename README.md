@@ -15,7 +15,7 @@
 </div>
 
 <div id="title" align="center">
-    <h3>Telegram Bot для проекта RevolutionWorlds, использующий и реализующий <a href="https://api.reworlds.net">публичное API</a>.</h3>
+    <h3>Telegram Bot для проекта RevolutionWorlds, использующий <a href="https://api.reworlds.net">публичное API</a>.</h3>
 </div>
 
 <div id="commands" align="center">
