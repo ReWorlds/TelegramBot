@@ -2,18 +2,21 @@ package net.reworlds.cache;
 
 import lombok.Getter;
 import net.reworlds.Bot;
-import net.reworlds.config.CommandText;
+import net.reworlds.cache.Cache.Status;
+import net.reworlds.command.CommandText;
 import net.reworlds.utils.DateFormatter;
 import net.reworlds.utils.RequestUtils;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Player extends Cache.Oldable {
+public final class Player extends Cache.Oldable {
     @Getter
     private final String arg;
     @Getter
@@ -47,25 +50,37 @@ public class Player extends Cache.Oldable {
     @Getter
     private String asStringSkin;
     @Getter
-    private boolean brokenRequest = false;
-    @Getter
-    private boolean userExists = false;
+    private final Status status;
 
     public Player(String player) {
         arg = player;
 
-        JSONObject json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
+        JSONObject json;
+        try {
+            json = RequestUtils.getJSON("https://api.reworlds.net/player/" + player);
+        } catch (IOException | InterruptedException e) {
+            Bot.getLogger().warn(e, e);
+            status = Status.ERROR;
+            return;
+        }
         if (json == null) {
-            brokenRequest = true;
+            status = Status.BROKEN;
             return;
         }
         if (json.has("error-code")) {
-            json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
+            try {
+                json = RequestUtils.getJSON("https://api.reworlds.net/id/" + player);
+            } catch (IOException | InterruptedException e) {
+                Bot.getLogger().warn(e, e);
+                status = Status.ERROR;
+                return;
+            }
             if (json == null) {
-                brokenRequest = true;
+                status = Status.BROKEN;
                 return;
             }
             if (json.has("error-code")) {
+                status = Status.API_ERROR;
                 return;
             }
         }
@@ -91,7 +106,8 @@ public class Player extends Cache.Oldable {
 
         if (!DateFormatter.unknownDate.equals(lastSeen)) {
             try {
-                active = DateFormatter.difference(lastSeen) <= 7 ? "\uD83D\uDD25" : "";
+                long difference = DateFormatter.difference(lastSeen);
+                active = difference <= 7 && difference >= 0 ? "\uD83D\uDD25" : "";
             } catch (ParseException e) {
                 Bot.getLogger().warn(e, e);
             }
@@ -115,9 +131,13 @@ public class Player extends Cache.Oldable {
                 stats.deaths, stats.kills, stats.mobKills, stats.brokenBlocks, stats.placedBlocks, stats.advancements,
                 Punishment.toString(bans), Punishment.toString(mutes), active);
         asStringSkin = String.format(CommandText.skinMessage, rank, name, id, discordID, UUID);
-        userExists = true;
+
+        status = Status.READY;
     }
 
+    /**
+     * Класс для сбора нарушений пользователя.
+     */
     public static class Punishment {
         @Getter
         private final String moderator;
@@ -130,7 +150,7 @@ public class Player extends Cache.Oldable {
         @Getter
         private final String expire;
 
-        Punishment(JSONObject object) {
+        Punishment(@NotNull JSONObject object) {
             moderator = object.getString("moderator");
             reason = object.getString("reason");
             left = object.getString("left");
@@ -142,7 +162,7 @@ public class Player extends Cache.Oldable {
             }
         }
 
-        public static String toString(List<Punishment> punishments) {
+        public static @NotNull String toString(@NotNull List<Punishment> punishments) {
             StringBuilder builder = new StringBuilder();
             if (punishments.isEmpty()) {
                 builder.append("\n└ Этот игрок не наказан.");
@@ -169,6 +189,9 @@ public class Player extends Cache.Oldable {
         }
     }
 
+    /**
+     * Класс для сбора статистики пользователя.
+     */
     public static class Statistic {
         @Getter
         private final int kills;
@@ -183,7 +206,7 @@ public class Player extends Cache.Oldable {
         @Getter
         private final int advancements;
 
-        public Statistic(JSONObject object) {
+        public Statistic(@NotNull JSONObject object) {
             kills = object.getInt("kills");
             deaths = object.getInt("deaths");
 
@@ -199,7 +222,7 @@ public class Player extends Cache.Oldable {
             advancements = amount;
         }
 
-        private static int statisticOf(JSONArray array) {
+        private static int statisticOf(@NotNull JSONArray array) {
             int amount = 0;
             for (int i = 0; i < array.length(); i++) {
                 amount += array.getJSONObject(i).getInt("amount");
