@@ -27,13 +27,19 @@ public final class ConnectionPool {
             setAccountString = "INSERT INTO %s (id, name) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = ?;".formatted(table);
             getAccountString = "SELECT * FROM %s WHERE id = ? LIMIT 1".formatted(table);
 
-            source = new HikariDataSource(config);
         } catch (ClassNotFoundException e) {
             Bot.getLogger().warn(e, e);
         }
     }
 
+    public static void initConnection() {
+        if (source == null || source.isClosed()) {
+            source = new HikariDataSource(config);
+        }
+    }
+
     public static Connection getConnection() throws SQLException {
+        initConnection();
         return source.getConnection();
     }
 
