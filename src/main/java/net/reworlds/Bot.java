@@ -13,6 +13,7 @@ import net.reworlds.command.CommandDispatcher;
 import net.reworlds.command.CommandService;
 import net.reworlds.command.CommandText;
 import net.reworlds.config.JSONManager;
+import net.reworlds.database.ConnectionPool;
 import net.reworlds.utils.DateFormatter;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -57,7 +58,13 @@ public final class Bot {
 
     public static void main(String[] args) {
         bot = new TelegramBot(token);
+
+        // Подключение коллектора устаревших данных из кэша
         Cache.collector();
+
+        // Инициализация подключения к БД.
+        ConnectionPool.initConnection();
+
         logger.info("Launch Time > " + DateFormatter.formatDate(new Date()));
 
         bot.setUpdatesListener(updates -> {
